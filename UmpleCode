@@ -1,0 +1,92 @@
+class Game
+{
+  * -> * Player players;
+  public static void main(){
+  Board b = new Board();
+  
+  }
+  
+}
+
+class Board
+{
+  public void apply(Move m){}
+  
+  public void randomRooms(){}
+}
+
+class Card
+{
+  
+}
+
+class Weapon
+{
+  isA Card;
+}
+
+class Estate
+{
+  isA Card;
+}
+
+class Character
+{
+  isA Card;
+}
+
+class Player
+{
+  * -> * Card hand;
+}class Move
+{
+  public boolean isValid(Board b){}
+  public void apply(Board b){}
+}
+
+//$?[End_of_model]$?
+
+namespace -;
+
+
+class Game
+{
+  position 50 30 109 45;
+  position.association Game__Player:players 110,16 0,10;
+}
+
+class Board
+{
+  position 23 177 161.225 78.9625;
+}
+
+class Card
+{
+  position 234 230 109 41.9625;
+}
+
+class Weapon
+{
+  position 273 438 109 41.9625;
+}
+
+class Estate
+{
+  position 50 430 109 45;
+}
+
+class Character
+{
+  position 397 328 109 41.9625;
+}
+
+class Player
+{
+  position 267 82 109 61.9625;
+  position.association Card:hand__Player 0,10 101,0;
+}
+
+class Move
+{
+  position 485 91 109 61.9625;
+}
