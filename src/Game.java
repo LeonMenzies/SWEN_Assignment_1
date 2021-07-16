@@ -27,7 +27,7 @@ public class Game
   {}
 
   // line 6 "model.ump"
-   public static  void main(){
+   public static void main(String[] args){
     Board b = new Board();
   }
 

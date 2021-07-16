@@ -170,7 +170,7 @@ public class Die
 
   // line 76 "model.ump"
    public int genValue(){
-    
+    return 0;
   }
 
 
