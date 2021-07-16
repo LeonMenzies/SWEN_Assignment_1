@@ -1,182 +1,40 @@
-/*PLEASE DO NOT EDIT THIS CODE*/
-/*This code was generated using the UMPLE 1.31.0.5692.1a9e80997 modeling language!*/
-
-
 import java.util.*;
 
-// line 70 "model.ump"
-// line 139 "model.ump"
-public class Die
-{
+public class Die {
+    private int value;
 
-  //------------------------
-  // MEMBER VARIABLES
-  //------------------------
+    private List<Player> players;
 
-  //Die Attributes
-  private int value;
-
-  //Die Associations
-  private List<Player> players;
-
-  //------------------------
-  // CONSTRUCTOR
-  //------------------------
-
-  public Die(int aValue)
-  {
-    value = aValue;
-    players = new ArrayList<Player>();
-  }
-
-  //------------------------
-  // INTERFACE
-  //------------------------
-
-  public boolean setValue(int aValue)
-  {
-    boolean wasSet = false;
-    value = aValue;
-    wasSet = true;
-    return wasSet;
-  }
-
-  public int getValue()
-  {
-    return value;
-  }
-  /* Code from template association_GetMany */
-  public Player getPlayer(int index)
-  {
-    Player aPlayer = players.get(index);
-    return aPlayer;
-  }
-
-  public List<Player> getPlayers()
-  {
-    List<Player> newPlayers = Collections.unmodifiableList(players);
-    return newPlayers;
-  }
-
-  public int numberOfPlayers()
-  {
-    int number = players.size();
-    return number;
-  }
-
-  public boolean hasPlayers()
-  {
-    boolean has = players.size() > 0;
-    return has;
-  }
-
-  public int indexOfPlayer(Player aPlayer)
-  {
-    int index = players.indexOf(aPlayer);
-    return index;
-  }
-  /* Code from template association_MinimumNumberOfMethod */
-  public static int minimumNumberOfPlayers()
-  {
-    return 0;
-  }
-  /* Code from template association_AddManyToManyMethod */
-  public boolean addPlayer(Player aPlayer)
-  {
-    boolean wasAdded = false;
-    if (players.contains(aPlayer)) { return false; }
-    players.add(aPlayer);
-    if (aPlayer.indexOfDy(this) != -1)
-    {
-      wasAdded = true;
-    }
-    else
-    {
-      wasAdded = aPlayer.addDy(this);
-      if (!wasAdded)
-      {
-        players.remove(aPlayer);
-      }
-    }
-    return wasAdded;
-  }
-  /* Code from template association_RemoveMany */
-  public boolean removePlayer(Player aPlayer)
-  {
-    boolean wasRemoved = false;
-    if (!players.contains(aPlayer))
-    {
-      return wasRemoved;
+    public Die(int aValue) {
+        value = aValue;
+        players = new ArrayList<>();
     }
 
-    int oldIndex = players.indexOf(aPlayer);
-    players.remove(oldIndex);
-    if (aPlayer.indexOfDy(this) == -1)
-    {
-      wasRemoved = true;
+    public void setValue(int aValue) {
+        this.value = aValue;
     }
-    else
-    {
-      wasRemoved = aPlayer.removeDy(this);
-      if (!wasRemoved)
-      {
-        players.add(oldIndex,aPlayer);
-      }
+
+    public int getValue() {
+        return this.value;
     }
-    return wasRemoved;
-  }
-  /* Code from template association_AddIndexControlFunctions */
-  public boolean addPlayerAt(Player aPlayer, int index)
-  {  
-    boolean wasAdded = false;
-    if(addPlayer(aPlayer))
-    {
-      if(index < 0 ) { index = 0; }
-      if(index > numberOfPlayers()) { index = numberOfPlayers() - 1; }
-      players.remove(aPlayer);
-      players.add(index, aPlayer);
-      wasAdded = true;
+
+    public List<Player> getPlayers() {
+        return this.players;
     }
-    return wasAdded;
-  }
 
-  public boolean addOrMovePlayerAt(Player aPlayer, int index)
-  {
-    boolean wasAdded = false;
-    if(players.contains(aPlayer))
-    {
-      if(index < 0 ) { index = 0; }
-      if(index > numberOfPlayers()) { index = numberOfPlayers() - 1; }
-      players.remove(aPlayer);
-      players.add(index, aPlayer);
-      wasAdded = true;
-    } 
-    else 
-    {
-      wasAdded = addPlayerAt(aPlayer, index);
+    public void addPlayer(Player player) {
+        this.players.add(player);
     }
-    return wasAdded;
-  }
 
-  public void delete()
-  {
-    ArrayList<Player> copyOfPlayers = new ArrayList<Player>(players);
-    players.clear();
-    for(Player aPlayer : copyOfPlayers)
-    {
-      aPlayer.removeDy(this);
+    public void removePlayer(Player player) {
+        this.players.remove(player);
     }
-  }
 
-  // line 76 "model.ump"
-   public int genValue(){
-    return 0;
-  }
+    public int genValue() {
+        return 0;
+    }
 
-
-  public String toString()
-  {
-    return super.toString() + "["+
-            "value" + ":" + getValue()+ "]";
-  }
+    public String toString() {
+        return super.toString() + "[" + "value" + ":" + getValue() + "]";
+    }
 }
