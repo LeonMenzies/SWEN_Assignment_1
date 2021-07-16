@@ -1,0 +1,106 @@
+class Game
+{
+  
+  public static void main(){
+  Board b = new Board();
+  
+  }
+  
+}
+
+class Board
+{
+  * -> * Player players;
+   * -> * Estate estates;
+  *->* Weapon weapons;
+  public void apply(Move m){}
+  
+  public void randomWeapRooms(){}
+}
+
+class Card
+{
+  
+}
+
+class WeaponCard
+{
+  isA Card;
+}
+
+class EstateCard
+{
+  isA Card;
+}
+
+class CharacterCard
+{
+  isA Card;
+}
+
+class Player
+{
+  isA Move;
+  boolean turn;
+  * -> * Card hand;
+}class Move
+{
+
+  public boolean isValid(Board b){}
+  public void apply(Board b){}
+}
+
+
+
+namespace -;
+
+
+class Weapon
+{
+  isA Move;
+}
+
+class Estate
+{
+   * -- * Player playersInEstate;
+
+}
+
+class Die
+{
+  int value;
+  * -- * Player;
+public int genValue(){
+
+}
+}
+
+class Game
+{
+  position 248 28 123.188 78.9625;
+  position.association Game__Player:players 110,16 0,10;
+}
+
+class Board
+{
+  position 229 145 223.188 95.9625;
+  position.association Board__Player:players 187,96 6,0;
+  position.association Board__Estate:estates 0,92 110,16;
+  position.association Board__Weapon:weapons 224,22 0,2;
+}
+
+class Card
+{
+  position 279 413 109 61.9625;
+}
+
+class Player
+{
+  position 270 306 114.938 78.9625;
+  position.association Card:hand__Player 27,79 108,0;
+}
+
+class Move
+{
+  position 451 247 196.738 95.9625;
+}
