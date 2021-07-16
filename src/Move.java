@@ -28,7 +28,7 @@ public class Move
 
   // line 50 "model.ump"
    public boolean isValid(Board b){
-    
+    return false;
   }
 
   // line 51 "model.ump"
