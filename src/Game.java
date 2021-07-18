@@ -1,9 +1,15 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class Game {
     ArrayList<Player> players = new ArrayList<>();
     ArrayList<Card> Deck = new ArrayList<>();
+    ArrayList<Card> circumstance = new ArrayList<>();
+    CharacterCard who;
+    EstateCard Where;
+    WeaponCard what;
+
     public Game() {
     }
 
@@ -36,7 +42,7 @@ public class Game {
         }
     }
     /**
-     * Method to add all the cards to the game of the correct
+     * Method to add all the cards to the game of the correct type
      */
     public void setUpDeck(){
         Deck.add(new CharacterCard("Bert"));
@@ -53,5 +59,23 @@ public class Game {
         Deck.add(new WeaponCard("Knife"));
         Deck.add(new WeaponCard("Shovel"));
         Deck.add(new WeaponCard("iPad"));
+        Collections.shuffle(Deck);
+    }
+
+    public void generateMurder(){
+        if(circumstance.size() == 0){
+
+        }
+        if(circumstance.size() == 3){
+            return;
+        }
+
+
+
+
+
+
+
+
     }
 }
