@@ -1,5 +1,5 @@
 public class WeaponCard extends Card {
-    public WeaponCard() {
-        super();
+    public WeaponCard(String name) {
+        super(name);
     }
 }

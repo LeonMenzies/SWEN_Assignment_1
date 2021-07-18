@@ -1,5 +1,6 @@
 public class CharacterCard extends Card {
-    public CharacterCard() {
-        super();
+
+    public CharacterCard(String name) {
+        super(name);
     }
 }
