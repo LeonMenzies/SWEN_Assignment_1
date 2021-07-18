@@ -35,10 +35,23 @@ public class Player extends Move {
 
     }
 
+
     public static void main(String[] args){
         Player p = new Player("Bob");
         p.roll();
         p.roll();
+
+    }
+    /**
+     * Deals the remaining cards out randomly amongst the players until there is none left
+     *
+     */
+    public void printHand(){
+
+        System.out.println(this.name +"'s" +" current Hand: ");
+        for(int i = 0; i < hand.size(); i++){
+            System.out.println(i+": "+hand.get(i).name);
+        }
 
     }
     public void setTurn(boolean aTurn) {

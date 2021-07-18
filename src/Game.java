@@ -1,14 +1,15 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
     ArrayList<Player> players = new ArrayList<>();
     ArrayList<Card> Deck = new ArrayList<>();
     ArrayList<Card> circumstance = new ArrayList<>();
-    CharacterCard who;
-    EstateCard Where;
-    WeaponCard what;
+    CharacterCard who = null;
+    EstateCard where = null;
+    WeaponCard what = null;
 
     public Game() {
     }
@@ -18,6 +19,8 @@ public class Game {
         Board board = new Board();
         game.playerSetUp();
         game.setUpDeck();
+        game.generateMurder();
+        game.dealCards();
     }
 
     /**
@@ -43,39 +46,85 @@ public class Game {
     }
     /**
      * Method to add all the cards to the game of the correct type
+     * shuffles the array after the cards have been added
      */
     public void setUpDeck(){
-        Deck.add(new CharacterCard("Bert"));
-        Deck.add(new CharacterCard("Pery"));
-        Deck.add(new CharacterCard("Lucilla"));
-        Deck.add(new CharacterCard("Malina"));
-        Deck.add(new EstateCard("Haunted House"));
-        Deck.add(new EstateCard("Manic Manor"));
-        Deck.add(new EstateCard("Villa Celia"));
-        Deck.add(new EstateCard("Calamity Castle"));
-        Deck.add(new EstateCard("Peril Palace"));
-        Deck.add(new WeaponCard("Broom"));
-        Deck.add(new WeaponCard("Scissors"));
-        Deck.add(new WeaponCard("Knife"));
-        Deck.add(new WeaponCard("Shovel"));
-        Deck.add(new WeaponCard("iPad"));
-        Collections.shuffle(Deck);
+        this.Deck.add(new CharacterCard("Bert"));
+        this.Deck.add(new CharacterCard("Pery"));
+        this.Deck.add(new CharacterCard("Lucilla"));
+        this.Deck.add(new CharacterCard("Malina"));
+        this.Deck.add(new EstateCard("Haunted House"));
+        this.Deck.add(new EstateCard("Manic Manor"));
+        this.Deck.add(new EstateCard("Villa Celia"));
+        this.Deck.add(new EstateCard("Calamity Castle"));
+        this.Deck.add(new EstateCard("Peril Palace"));
+        this.Deck.add(new WeaponCard("Broom"));
+        this.Deck.add(new WeaponCard("Scissors"));
+        this.Deck.add(new WeaponCard("Knife"));
+        this.Deck.add(new WeaponCard("Shovel"));
+        this.Deck.add(new WeaponCard("iPad"));
+        Collections.shuffle(this.Deck);
     }
-
+    /**
+     * Method to generate the murder circumstances one of each type of card is selected at random
+     *
+     */
     public void generateMurder(){
-        if(circumstance.size() == 0){
-
-        }
+        //if array size is 3 enough cards has been selected
         if(circumstance.size() == 3){
             return;
         }
+        //grabs a random card from the deck
+        Random rand = new Random();
 
+        Card c = this.Deck.get(rand.nextInt(this.Deck.size()));
 
+        //checks what type of card it is if that is currently null then that card is the new circumstance
+        //either generate murder is called again until all three cards are chosen
+        //cards are then removed from the deck
+        if(c instanceof CharacterCard){
+            if(this.who == null){
+                this.who = (CharacterCard)c;
+                this.circumstance.add(this.who);
+                this.Deck.remove(this.who);
+            }
+            generateMurder();
+        }
+        if(c instanceof EstateCard){
+            if(this.where == null){
+                this.where = (EstateCard)c;
+                this.circumstance.add(this.where);
+                this.Deck.remove(this.where);
+            }
+            generateMurder();
+        }
+        if(c instanceof WeaponCard){
+            if(this.what == null){
+                this.what = (WeaponCard) c;
+                this.circumstance.add(this.what);
+                this.Deck.remove(this.what);
+            }
+            generateMurder();
+        }
 
-
-
-
-
-
+    }
+    /**
+     * Deals the remaining cards (after the murder circumstance as been selected)
+     * out randomly amongst the players until there is none left
+     *
+     */
+    public void dealCards(){
+        //until the deck is empty loops through the players until there is none left
+        while(!this.Deck.isEmpty()){
+            for(Player p : this.players){
+                if(this.Deck.isEmpty()){
+                    break;
+                }
+                Random rand = new Random();
+                Card c = this.Deck.get(rand.nextInt(this.Deck.size()));
+                p.addHand(c);
+                this.Deck.remove(c);
+            }
+        }
     }
 }
