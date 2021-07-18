@@ -8,10 +8,10 @@ public class Game {
     }
 
     public static void main(String[] args) {
-        Game g = new Game();
-        Board b = new Board();
-        g.playerSetUp();
-        g.setUpDeck();
+        Game game = new Game();
+        Board board = new Board();
+        game.playerSetUp();
+        game.setUpDeck();
     }
 
     /**
