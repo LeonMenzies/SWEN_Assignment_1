@@ -1,7 +1,9 @@
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Game {
     ArrayList<Player> players = new ArrayList<>();
@@ -10,6 +12,9 @@ public class Game {
     CharacterCard who = null;
     EstateCard where = null;
     WeaponCard what = null;
+    boolean gameWon = false;
+    Player winner = null;
+    Pattern MovePat = Pattern.compile("R|G|H|F|W|A|S|D");
 
     public Game() {
     }
@@ -21,6 +26,41 @@ public class Game {
         game.setUpDeck();
         game.generateMurder();
         game.dealCards();
+        game.playGame(board);
+    }
+
+    public void playGame(Board board){
+      Scanner input = new Scanner(System.in);
+       while(!gameWon){
+           for(Player p: players){
+               System.out.println("It is "+p.getName()+"'s turn please make sure they have the tablet and enter any key to continue: ");
+               String in = input.next();
+               System.out.println("Enter R(Roll), H(Show Hand), G(guess), F(Final Guess) or WASD(Move)");
+               in = input.next();
+               in = checkInput(in);
+               if(in.equals("R")){
+                   p.roll();
+               }
+
+           }
+
+
+
+       }
+
+    }
+
+
+    public String checkInput(String in){
+        Scanner input = new Scanner(System.in);
+       if(in.equals(MovePat)){
+           return in;
+       }else{
+           System.out.println("Please enter a Valid Move");
+           in = input.next();
+           checkInput(in);
+       }
+        return in;
     }
 
     /**
@@ -114,6 +154,8 @@ public class Game {
      *
      */
     public void dealCards(){
+        //randoms the order of the players so undecided who gets extra cards and who starts
+        Collections.shuffle(players);
         //until the deck is empty loops through the players until there is none left
         while(!this.Deck.isEmpty()){
             for(Player p : this.players){

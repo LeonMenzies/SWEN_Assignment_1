@@ -11,25 +11,32 @@ public class Player extends Move {
     private Random dice2 = new Random();
     private int upperBound = 7;
     private int steps = 0;
+    boolean hasRolled = false;
+
 
     private List<Card> hand;
-   // private List<Estate> estates;
-  //  private List<Die> dies;
+
 
     public Player(String name) {
-     //   super();
         this.name = name;
         hand = new ArrayList<>();
-       // estates = new ArrayList<>();
-       // dies = new ArrayList<>();
+
     }
 
+    public String getName(){
+        return this.name;
+    }
+
+    public int getSteps(){
+        return this.steps;
+    }
 
     public void roll(){
-        if(turn){
+        if(turn && !hasRolled){
             int d1 = dice1.nextInt(upperBound);
             int d2 = dice2.nextInt(upperBound);
             steps = d1+d2;
+            hasRolled = true;
             System.out.println(steps);
         }
 
@@ -66,13 +73,7 @@ public class Player extends Move {
         return this.hand;
     }
 
-//    public List<Estate> getEstates() {
-//        return this.estates;
-//    }
 
-//    public List<Die> getDies() {
-//        return this.dies;
-//    }
     public void addHand(Card card) {
         this.hand.add(card);
     }
@@ -81,21 +82,7 @@ public class Player extends Move {
         this.hand.remove(card);
     }
 
-//    public void addEstate(Estate aEstate) {
-//        this.estates.add(aEstate);
-//    }
-//
-//    public void removeEstate(Estate aEstate) {
-//        this.estates.remove(aEstate);
-//    }
-//
-//    public void addDy(Die aDy) {
-//        this.dies.add(aDy);
-//    }
-//
-//    public void removeDy(Die aDy) {
-//        this.dies.remove(aDy);
-//    }
+
 
     public String toString() {
         return super.toString() + "[" + "turn" + ":" + getTurn() + "]";
