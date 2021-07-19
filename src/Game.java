@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Game {
@@ -14,7 +15,7 @@ public class Game {
     WeaponCard what = null;
     boolean gameWon = false;
     Player winner = null;
-    Pattern MovePat = Pattern.compile("R|G|H|F|W|A|S|D");
+    Pattern MovePat = Pattern.compile("[RGHFWASD]");
 
     public Game() {
     }
@@ -44,8 +45,6 @@ public class Game {
 
            }
 
-
-
        }
 
     }
@@ -55,7 +54,9 @@ public class Game {
      */
     public String checkInput(String in){
         Scanner input = new Scanner(System.in);
-       if(in.equals(MovePat)){
+        Matcher matcher = MovePat.matcher(in);
+        boolean matchFound = matcher.matches();
+       if(matchFound){
            return in;
        }else{
            System.out.println("Please enter a Valid Move");
@@ -92,7 +93,7 @@ public class Game {
      */
     public void setUpDeck(){
         this.Deck.add(new CharacterCard("Bert"));
-        this.Deck.add(new CharacterCard("Pery"));
+        this.Deck.add(new CharacterCard("Percy"));
         this.Deck.add(new CharacterCard("Lucilla"));
         this.Deck.add(new CharacterCard("Malina"));
         this.Deck.add(new EstateCard("Haunted House"));
