@@ -50,7 +50,9 @@ public class Game {
 
     }
 
-
+    /**
+     *Checks to make sure the player has entered a correct move key
+     */
     public String checkInput(String in){
         Scanner input = new Scanner(System.in);
        if(in.equals(MovePat)){
