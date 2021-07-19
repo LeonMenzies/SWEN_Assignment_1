@@ -8,4 +8,8 @@ public class Card implements Cloneable {
     public Card clone(){
         return this;
     }
+
+    public String getName(){
+        return this.name;
+    }
 }
