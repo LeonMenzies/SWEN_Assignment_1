@@ -16,13 +16,17 @@ public class Game {
     Pattern MovePat = Pattern.compile("[RGHFWASDE]");
     Pattern dirPat = Pattern.compile("[WASD]");
 
+    private static Board board;
+
+
 
     public Game() {
     }
 
     public static void main(String[] args) {
         Game game = new Game();
-        Board board = new Board();
+        board = new Board(24, 24);
+        board.setup();
         game.playerSetUp();
         game.setUpDeck();
         game.generateMurder();
@@ -47,10 +51,12 @@ public class Game {
     }
 
     public void playersTurn(Player p){
+        //Display the board before the players turn
+        System.out.println(board);
         Scanner input = new Scanner(System.in);
         String in;
         if(!p.getTurn()) {
-            System.out.println("It is "+p.getName()+"'s turn please make sure they have the tablet and enter any key to continue: ");
+            System.out.print("It is "+p.getName()+"'s turn please make sure they have the tablet and enter any key to continue: ");
             in = input.next();
             p.setTurn(true);
 
@@ -178,22 +184,28 @@ public class Game {
     public void playerSetUp(){
         //scans in a string from the console
         Scanner input = new Scanner(System.in);
-        System.out.println("Enter the number of Players between 3 & 4: ");
+        System.out.print("Enter the number of Players between 3 & 4: ");
         String numPlayers = input.next();
 
         if(!numPlayers.equals("3") && !numPlayers.equals("4")){
             playerSetUp();
         }
+
+
+
         //players are then added to the array depending on the amount
-        players.add(new Player("Lucilla"));
-        players.add(new Player("Bert"));
-        players.add(new Player("Malina"));
+        players.add(new Player("Lucilla", 9, 1));
+        players.add(new Player("Bert", 14, 22));
+        players.add(new Player("Malina", 1, 11));
 
         //4 player gets added in if nesscary
         if(numPlayers.equals("4")){
-            players.add(new Player("Percy"));
+            players.add(new Player("Percy", 22, 9));
         }
 
+        for(Player p : players){
+            board.setPlayer(p);
+        }
 
     }
     /**

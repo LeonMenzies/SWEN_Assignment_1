@@ -6,7 +6,10 @@ import java.util.Random;
 public class Player extends Move implements Cloneable {
     private boolean turn = false;
     private String name;
-  //  private ArrayList<Cell> visted;
+
+    int row;
+    int col;
+  //  private ArrayList<Cells.Cell> visted;
     private Random dice1 = new Random();
     private Random dice2 = new Random();
     private int upperBound = 7;
@@ -19,8 +22,10 @@ public class Player extends Move implements Cloneable {
     private List<Card> hand;
 
 
-    public Player(String name) {
+    public Player(String name, int row, int col) {
         this.name = name;
+        this.row = row;
+        this.col = col;
         hand = new ArrayList<>();
 
     }
@@ -51,12 +56,7 @@ public class Player extends Move implements Cloneable {
         return rollStatus;
     }
 
-    public static void main(String[] args){
-        Player p = new Player("Bob");
-        p.roll();
-        p.roll();
 
-    }
 
     public void printHand(){
 
@@ -68,7 +68,7 @@ public class Player extends Move implements Cloneable {
     }
     @Override
     public Player clone(){
-        Player p = new Player(this.name);
+        Player p = new Player(this.name, this.row, this.col);
         for(Card c: this.hand){
             p.hand.add(c.clone());
         }
@@ -109,5 +109,13 @@ public class Player extends Move implements Cloneable {
 
     public String toString() {
         return super.toString() + "[" + "turn" + ":" + getTurn() + "]";
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
     }
 }
