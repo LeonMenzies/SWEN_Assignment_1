@@ -28,6 +28,7 @@ public class Player extends Move implements Cloneable {
         this.row = row;
         this.col = col;
         hand = new ArrayList<>();
+        guesses = new ArrayList<>();
     }
 
     public String getName(){
