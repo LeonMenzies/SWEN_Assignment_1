@@ -3,7 +3,7 @@ import java.util.Random;
 
 
 
-public class Player extends Move {
+public class Player extends Move implements Cloneable {
     private boolean turn = false;
     private String name;
   //  private ArrayList<Cell> visted;
@@ -11,7 +11,9 @@ public class Player extends Move {
     private Random dice2 = new Random();
     private int upperBound = 7;
     private int steps = 0;
-    boolean rollStatus = false;
+    private boolean rollStatus = false;
+    private boolean isOut = false;
+    private ArrayList<Card> guesses;
 
 
     private List<Card> hand;
@@ -42,7 +44,9 @@ public class Player extends Move {
 
     }
 
-
+    public boolean getIsOut(){
+        return isOut;
+    }
     public boolean getRollStatus(){
         return rollStatus;
     }
@@ -53,10 +57,7 @@ public class Player extends Move {
         p.roll();
 
     }
-    /**
-     * Deals the remaining cards out randomly amongst the players until there is none left
-     *
-     */
+
     public void printHand(){
 
         System.out.println(this.name +"'s" +" current Hand: ");
@@ -64,6 +65,14 @@ public class Player extends Move {
             System.out.println(i+": "+hand.get(i).name);
         }
 
+    }
+    @Override
+    public Player clone(){
+        Player p = new Player(this.name);
+        for(Card c: this.hand){
+            p.hand.add(c.clone());
+        }
+        return p;
     }
     public void setTurn(boolean aTurn) {
         this.turn = aTurn;
@@ -73,10 +82,20 @@ public class Player extends Move {
         return this.turn;
     }
 
+    public List<Card> getGuess(){
+        return this.guesses;
+    }
+
     public List<Card> getHand() {
         return this.hand;
     }
 
+    public void addGuess(Card c){
+        this.guesses.add(c);
+    }
+    public void clearGuess(){
+        this.guesses.clear();
+    }
 
     public void addHand(Card card) {
         this.hand.add(card);

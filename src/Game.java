@@ -1,16 +1,12 @@
-import java.io.IOException;
-import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Game {
     ArrayList<Player> players = new ArrayList<>();
     ArrayList<Player> tempPlayers = new ArrayList<>();
-    ArrayList<Card> Deck = new ArrayList<>();
+    ArrayList<Card> deck = new ArrayList<>();
+    ArrayList<Card> tempDeck = new ArrayList<>();
     ArrayList<Card> circumstance = new ArrayList<>();
     CharacterCard who = null;
     EstateCard where = null;
@@ -35,12 +31,15 @@ public class Game {
     }
 
     public void playGame(Board board){
-
+        Random rand = new Random();
+        int i = rand.nextInt(players.size());
+        Player p = players.get(i);
+        generateStartingOrder(p);
        while(!gameWon){
-           for(Player p: players){
-
-              playersTurn(p);
-
+           for(Player player: players){
+               if(!player.getIsOut()) {
+                   playersTurn(player);
+               }
            }
 
        }
@@ -82,8 +81,14 @@ public class Game {
             playersTurn(p);
         }
 
+        if(in.equals("H")){
+            p.printHand();
+            playersTurn(p);
+        }
+
         if(in.equals("G")) {
             refuteOrder(p);
+            makeGuess(p);
         }
         if(in.equals("E")){
             p.setTurn(false);
@@ -92,11 +97,59 @@ public class Game {
         }
     }
 
-    public void refuteOrder(Player p){
-      for(Player p1 : tempPlayers){
-          System.out.println(p1.getName());
-      }
+    public List<Card> makeGuess(Player p){
+        p.clearGuess();
+        for(int i = 0; i < tempDeck.size(); i++){
+            System.out.println(i+": "+ tempDeck.get(i).name);
+        }
+        Scanner input = new Scanner(System.in);
+        System.out.println("Please select 3 cards as your guess eg 1,5,10");
 
+       return p.getGuess();
+    }
+
+    /**
+     * Make sure the order to refute is correct depending on who is making the guess
+     */
+    public void refuteOrder(Player p){
+       //clears previous order and clones the players in there orginal order into the array putting aside the player
+       //who is making the guess
+      tempPlayers.clear();
+      Player guesser = null;
+        for(Player p1 : players){
+            if(p1.getName().equals(p.getName())){
+                guesser = p1;
+                tempPlayers.add(guesser);
+            }
+            else{
+                tempPlayers.add(p1.clone());
+            }
+        }
+        //moves the ones in front of the guesser to the back of the array then removes them from the front
+        int i = tempPlayers.indexOf(guesser);
+        System.out.println(i);
+        for(int j = 0; j < i; j++){
+            tempPlayers.add(tempPlayers.size(),tempPlayers.get(j));
+            tempPlayers.remove(j);
+        }
+        //finally removes the guesser from the order
+        tempPlayers.remove(guesser);
+        for(Player p2 : tempPlayers){
+            System.out.println(p2.getName());
+        }
+
+    }
+
+    /**
+     *Generate starting order for the game randomly chosen start but still follow same order as refute goes in
+     */
+    public void generateStartingOrder(Player p){
+        int i = players.indexOf(p);
+
+        for(int j = 0; j < i; j++){
+            players.add(players.size(),players.get(j));
+            players.remove(j);
+        }
 
     }
 
@@ -105,6 +158,7 @@ public class Game {
      */
     public String checkInput(String in){
         Scanner input = new Scanner(System.in);
+        //if a match is found that key can be returned otherwise the player can keep trying until its valid
         Matcher matcher = MovePat.matcher(in);
         boolean matchFound = matcher.matches();
        if(matchFound){
@@ -135,32 +189,38 @@ public class Game {
         players.add(new Player("Bert"));
         players.add(new Player("Malina"));
 
-
+        //4 player gets added in if nesscary
         if(numPlayers.equals("4")){
             players.add(new Player("Percy"));
         }
-        tempPlayers = players;
+
+
     }
     /**
      * Method to add all the cards to the game of the correct type
      * shuffles the array after the cards have been added
      */
     public void setUpDeck(){
-        this.Deck.add(new CharacterCard("Bert"));
-        this.Deck.add(new CharacterCard("Percy"));
-        this.Deck.add(new CharacterCard("Lucilla"));
-        this.Deck.add(new CharacterCard("Malina"));
-        this.Deck.add(new EstateCard("Haunted House"));
-        this.Deck.add(new EstateCard("Manic Manor"));
-        this.Deck.add(new EstateCard("Villa Celia"));
-        this.Deck.add(new EstateCard("Calamity Castle"));
-        this.Deck.add(new EstateCard("Peril Palace"));
-        this.Deck.add(new WeaponCard("Broom"));
-        this.Deck.add(new WeaponCard("Scissors"));
-        this.Deck.add(new WeaponCard("Knife"));
-        this.Deck.add(new WeaponCard("Shovel"));
-        this.Deck.add(new WeaponCard("iPad"));
-        Collections.shuffle(this.Deck);
+        this.deck.add(new CharacterCard("Bert"));
+        this.deck.add(new CharacterCard("Percy"));
+        this.deck.add(new CharacterCard("Lucilla"));
+        this.deck.add(new CharacterCard("Malina"));
+        this.deck.add(new EstateCard("Haunted House"));
+        this.deck.add(new EstateCard("Manic Manor"));
+        this.deck.add(new EstateCard("Villa Celia"));
+        this.deck.add(new EstateCard("Calamity Castle"));
+        this.deck.add(new EstateCard("Peril Palace"));
+        this.deck.add(new WeaponCard("Broom"));
+        this.deck.add(new WeaponCard("Scissors"));
+        this.deck.add(new WeaponCard("Knife"));
+        this.deck.add(new WeaponCard("Shovel"));
+        this.deck.add(new WeaponCard("iPad"));
+
+        //clones the cards to a temp deck for making guesses
+        for(Card c : deck){
+            tempDeck.add(c.clone());
+        }
+        Collections.shuffle(this.deck);
     }
     /**
      * Method to generate the murder circumstances one of each type of card is selected at random
@@ -174,7 +234,7 @@ public class Game {
         //grabs a random card from the deck
         Random rand = new Random();
 
-        Card c = this.Deck.get(rand.nextInt(this.Deck.size()));
+        Card c = this.deck.get(rand.nextInt(this.deck.size()));
 
         //checks what type of card it is if that is currently null then that card is the new circumstance
         //either generate murder is called again until all three cards are chosen
@@ -183,7 +243,7 @@ public class Game {
             if(this.who == null){
                 this.who = (CharacterCard)c;
                 this.circumstance.add(this.who);
-                this.Deck.remove(this.who);
+                this.deck.remove(this.who);
             }
             generateMurder();
         }
@@ -191,7 +251,7 @@ public class Game {
             if(this.where == null){
                 this.where = (EstateCard)c;
                 this.circumstance.add(this.where);
-                this.Deck.remove(this.where);
+                this.deck.remove(this.where);
             }
             generateMurder();
         }
@@ -199,7 +259,7 @@ public class Game {
             if(this.what == null){
                 this.what = (WeaponCard) c;
                 this.circumstance.add(this.what);
-                this.Deck.remove(this.what);
+                this.deck.remove(this.what);
             }
             generateMurder();
         }
@@ -211,18 +271,17 @@ public class Game {
      *
      */
     public void dealCards(){
-        //randoms the order of the players so undecided who gets extra cards and who starts
-        Collections.shuffle(players);
+
         //until the deck is empty loops through the players until there is none left
-        while(!this.Deck.isEmpty()){
+        while(!this.deck.isEmpty()){
             for(Player p : this.players){
-                if(this.Deck.isEmpty()){
+                if(this.deck.isEmpty()){
                     break;
                 }
                 Random rand = new Random();
-                Card c = this.Deck.get(rand.nextInt(this.Deck.size()));
+                Card c = this.deck.get(rand.nextInt(this.deck.size()));
                 p.addHand(c);
-                this.Deck.remove(c);
+                this.deck.remove(c);
             }
         }
     }
