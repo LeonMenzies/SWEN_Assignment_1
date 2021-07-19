@@ -11,7 +11,7 @@ public class Player extends Move {
     private Random dice2 = new Random();
     private int upperBound = 7;
     private int steps = 0;
-    boolean hasRolled = false;
+    boolean rollStatus = false;
 
 
     private List<Card> hand;
@@ -32,16 +32,20 @@ public class Player extends Move {
     }
 
     public void roll(){
-        if(turn && !hasRolled){
+        if(turn){
             int d1 = dice1.nextInt(upperBound);
             int d2 = dice2.nextInt(upperBound);
             steps = d1+d2;
-            hasRolled = true;
-            System.out.println(steps);
+            rollStatus = true;
+
         }
 
     }
 
+
+    public boolean getRollStatus(){
+        return rollStatus;
+    }
 
     public static void main(String[] args){
         Player p = new Player("Bob");

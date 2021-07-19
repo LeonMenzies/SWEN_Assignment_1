@@ -15,7 +15,8 @@ public class Game {
     WeaponCard what = null;
     boolean gameWon = false;
     Player winner = null;
-    Pattern MovePat = Pattern.compile("[RGHFWASD]");
+    Pattern MovePat = Pattern.compile("[RGHFWASDE]");
+    Pattern dirPat = Pattern.compile("[WASD]");
 
     public Game() {
     }
@@ -31,22 +32,56 @@ public class Game {
     }
 
     public void playGame(Board board){
-      Scanner input = new Scanner(System.in);
+
        while(!gameWon){
            for(Player p: players){
-               System.out.println("It is "+p.getName()+"'s turn please make sure they have the tablet and enter any key to continue: ");
-               String in = input.next();
-               System.out.println("Enter R(Roll), H(Show Hand), G(guess), F(Final Guess) or WASD(Move)");
-               in = input.next();
-               in = checkInput(in);
-               if(in.equals("R")){
-                   p.roll();
-               }
+              playersTurn(p);
 
            }
 
        }
 
+    }
+
+    public void playersTurn(Player p){
+        Scanner input = new Scanner(System.in);
+        String in;
+        if(!p.getTurn()) {
+            System.out.println("It is "+p.getName()+"'s turn please make sure they have the tablet and enter any key to continue: ");
+            in = input.next();
+            p.setTurn(true);
+
+        }
+
+        System.out.println(p.getName() +" has "+p.getSteps()+" number of steps");
+        if(!p.getRollStatus()) {
+            System.out.println("R(Roll), H(Show Hand), G(guess), F(Final Guess), E(END TURN) or WASD(Move)");
+        }else{
+            System.out.println("H(Show Hand), G(guess), F(Final Guess), E(END TURN) or WASD(Move)");
+        }
+        in = input.next();
+        in = checkInput(in);
+        if(in.equals("R")&& !p.getRollStatus()){
+            p.roll();
+            playersTurn(p);
+        }else if(in.equals("R")&& p.getRollStatus()){
+            System.out.println("Already Rolled");
+            playersTurn(p);
+        }
+        Matcher matcher = dirPat.matcher(in);
+        boolean matchFound = matcher.matches();
+        if(matchFound && p.getSteps() != 0){
+
+            //playermove method needs to be implementede
+            playersTurn(p);
+        }else if(matchFound && p.getSteps() == 0){
+            System.out.println("You are out of steps or please roll");
+            playersTurn(p);
+        }
+
+        if(in.equals("G")){
+
+        }
     }
 
     /**
