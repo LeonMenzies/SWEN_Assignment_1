@@ -169,4 +169,12 @@ public class Board {
         }
         return sb.toString();
     }
+
+    public Cell[][] getCells(){
+        return cells;
+    }
+
+    public void setCells(Cell[][] cells){
+        this.cells = cells;
+    }
 }

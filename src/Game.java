@@ -69,20 +69,23 @@ public class Game {
         }
         in = input.next();
         in = checkInput(in);
+
         if(in.equals("R")&& !p.getRollStatus()){
             p.roll();
             playersTurn(p);
-        }else if(in.equals("R")&& p.getRollStatus()){
+        }
+
+        else if(in.equals("R")&& p.getRollStatus()){
             System.out.println("Already Rolled");
             playersTurn(p);
         }
+
         Matcher matcher = dirPat.matcher(in);
         boolean matchFound = matcher.matches();
         if(matchFound && p.getSteps() != 0){
-
-            //playermove method needs to be implementede
+            p.move(board, in);
             playersTurn(p);
-        }else if(matchFound && p.getSteps() == 0){
+        } else if(matchFound && p.getSteps() == 0){
             System.out.println("You are out of steps or please roll");
             playersTurn(p);
         }
@@ -96,6 +99,7 @@ public class Game {
             refuteOrder(p);
             makeGuess(p);
         }
+
         if(in.equals("E")){
             p.setTurn(false);
             clearScreen();
