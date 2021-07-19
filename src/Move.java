@@ -1,12 +1,4 @@
-public class Move {
-    public Move() {
-    }
-
-    public boolean isValid(Board b) {
-        return false;
-    }
-
-    public void apply(Board b) {
-
-    }
+public abstract class Move {
+    //public abstract void apply(Board b);
+    public abstract boolean isValid(Board b, String direction);
 }
