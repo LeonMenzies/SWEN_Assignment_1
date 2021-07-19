@@ -11,7 +11,6 @@ public class Player extends Move implements Cloneable {
     int col;
 
     //private ArrayList<Cells.Cell> visited;
-    private Map<Integer, Integer> visited = new HashMap<>();
 
     private Random dice1 = new Random();
     private Random dice2 = new Random();
