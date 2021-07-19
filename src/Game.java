@@ -82,8 +82,7 @@ public class Game {
         Matcher matcher = dirPat.matcher(in);
         boolean matchFound = matcher.matches();
         if (matchFound && p.getSteps() != 0) {
-
-            //playermove method needs to be implementede
+            p.move(board, in);
             playersTurn(p);
         } else if (matchFound && p.getSteps() == 0) {
             System.out.println("You are out of steps or please roll");
