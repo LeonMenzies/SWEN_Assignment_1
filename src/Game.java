@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,6 +9,7 @@ import java.util.regex.Pattern;
 
 public class Game {
     ArrayList<Player> players = new ArrayList<>();
+    ArrayList<Player> tempPlayers = new ArrayList<>();
     ArrayList<Card> Deck = new ArrayList<>();
     ArrayList<Card> circumstance = new ArrayList<>();
     CharacterCard who = null;
@@ -17,6 +19,7 @@ public class Game {
     Player winner = null;
     Pattern MovePat = Pattern.compile("[RGHFWASDE]");
     Pattern dirPat = Pattern.compile("[WASD]");
+
 
     public Game() {
     }
@@ -35,6 +38,7 @@ public class Game {
 
        while(!gameWon){
            for(Player p: players){
+
               playersTurn(p);
 
            }
@@ -52,7 +56,6 @@ public class Game {
             p.setTurn(true);
 
         }
-
         System.out.println(p.getName() +" has "+p.getSteps()+" number of steps");
         if(!p.getRollStatus()) {
             System.out.println("R(Roll), H(Show Hand), G(guess), F(Final Guess), E(END TURN) or WASD(Move)");
@@ -79,9 +82,22 @@ public class Game {
             playersTurn(p);
         }
 
-        if(in.equals("G")){
-
+        if(in.equals("G")) {
+            refuteOrder(p);
         }
+        if(in.equals("E")){
+            p.setTurn(false);
+            clearScreen();
+            return;
+        }
+    }
+
+    public void refuteOrder(Player p){
+      for(Player p1 : tempPlayers){
+          System.out.println(p1.getName());
+      }
+
+
     }
 
     /**
@@ -115,12 +131,15 @@ public class Game {
             playerSetUp();
         }
         //players are then added to the array depending on the amount
-        players.add(new Player("Bert"));
-        players.add(new Player("Percy"));
         players.add(new Player("Lucilla"));
+        players.add(new Player("Bert"));
+        players.add(new Player("Malina"));
+
+
         if(numPlayers.equals("4")){
-            players.add(new Player("Malina"));
+            players.add(new Player("Percy"));
         }
+        tempPlayers = players;
     }
     /**
      * Method to add all the cards to the game of the correct type
@@ -207,4 +226,13 @@ public class Game {
             }
         }
     }
+    public static void clearScreen() {
+
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+
+    }
+
+
+
 }
