@@ -83,28 +83,28 @@ public class Player extends Move implements Cloneable {
                 case "W":
                     cells[row - 1][col] = playerCell;
                     row = row - 1;
-                    visited.put(row, col);
+                    //visited.put(row, col);
                     b.setCells(cells);
                     break;
 
                 case "A":
                     cells[row][col - 1] = playerCell;
                     col = col - 1;
-                    visited.put(row, col);
+                    //visited.put(row, col);
                     b.setCells(cells);
                     break;
 
                 case "S":
                     cells[row + 1][col] = playerCell;
                     row = row + 1;
-                    visited.put(row, col);
+                    //visited.put(row, col);
                     b.setCells(cells);
                     break;
 
                 case "D":
                     cells[row][col + 1] = playerCell;
                     col = col + 1;
-                    visited.put(row, col);
+                    //visited.put(row, col);
                     b.setCells(cells);
                     break;
 
