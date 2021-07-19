@@ -16,7 +16,7 @@ public class Game {
     Player winner = null;
     Pattern MovePat = Pattern.compile("[RGHFWASDE]");
     Pattern dirPat = Pattern.compile("[WASD]");
-    
+
 
     private static Board board;
 
@@ -102,49 +102,58 @@ public class Game {
             System.out.println("Please past the tablet back to " + p.getName());
             in = input.next();
             System.out.println("Refute cards are: ");
-            for(int i = 0; i < refuteCards.size(); i++){
+            for (int i = 0; i < refuteCards.size(); i++) {
                 System.out.println(i + ": " + refuteCards.get(i).getName());
             }
 
         }
-        if(in.equals("F")){
+
+        if (in.equals("F")) {
 
         }
+
         if (in.equals("E")) {
             p.setTurn(false);
             clearScreen();
             return;
         }
     }
+
     /**
      * Goes through all the players aside from the guesser and checks if they can refute
      */
-    public List<Card> refute(List<Card> guess) {
+    public void refute(List<Card> guess) {
+        //goes through the list of players in the correct refute order displaying the current guess cards
         for (int i = 0; i < tempPlayers.size(); i++) {
             System.out.println("The current Guess is:");
             for (Card c : guess) {
                 System.out.print(c.getName() + " ");
             }
+            //prints out who's turn it is to refute and there cards
             Scanner input = new Scanner(System.in);
             System.out.println("\nIt is " + tempPlayers.get(i).getName() + "'s time to make a refute ");
             tempPlayers.get(i).printHand();
             System.out.println("Please pick a card that refutes eg 1 or enter 4 if you cant refute");
             String in = input.next();
+            //method checks to see if they have entered a number
             if (isNumeric(in)) {
                 int j = Integer.parseInt(in.substring(0, 1));
-                if (j > 5) {
+                System.out.println(j);
+                if (j > tempPlayers.get(i).getHand().size() - 1 && j != 4) {
                     System.out.println("Please enter a valid number");
                     refute(guess);
                 }
+                //following ifs check if they can refute or if the refute is legit
                 if (j == 4) {
                     boolean check = checkRefute(guess, tempPlayers.get(i).getHand());
                     if (check) {
                         System.out.println("You can refute please try again");
                         refute(guess);
                     }
-                }else {
+                } else {
                     Card r = tempPlayers.get(i).getHand().get(j);
                     boolean isRefute = isARefute(guess, r);
+                    //if refute is legit card is added to one to show player making the guess
                     if (isRefute) {
                         refuteCards.add(r);
                     } else {
@@ -152,15 +161,14 @@ public class Game {
                         refute(guess);
                     }
                 }
+                //player is removed from the list and the next player goes
                 tempPlayers.remove(tempPlayers.get(i));
-                refute(guess);
 
-            } else {
-                refute(guess);
             }
+            refute(guess);
 
         }
-        return refuteCards;
+
     }
 
     /**
@@ -207,7 +215,7 @@ public class Game {
      * Allows the play to make a guess of one of each card, the estate being the estate they are currently in
      */
 
-    public List<Card> makeGuess(Player p) {
+    public void makeGuess(Player p) {
         //clears the current players guess and prints out all the cards for them for the player
         p.clearGuess();
         for (int i = 0; i < tempDeck.size(); i++) {
@@ -249,7 +257,7 @@ public class Game {
         p.addGuess(gWhere);
         p.addGuess(gWhat);
 
-        return p.getGuess();
+
     }
 
     /**
