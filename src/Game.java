@@ -107,6 +107,9 @@ public class Game {
             }
 
         }
+        if(in.equals("F")){
+
+        }
         if (in.equals("E")) {
             p.setTurn(false);
             clearScreen();
