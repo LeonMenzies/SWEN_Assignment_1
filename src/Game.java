@@ -43,23 +43,31 @@ public class Game {
         while (!gameWon) {
             for (Player player : players) {
                 if (!player.getIsOut()) {
-                    playersTurn(player);
+                    gameWon = playersTurn(player);
                 }
             }
 
         }
 
+        System.out.println("The winner is " + winner.getName());
+
     }
 
-    public void playersTurn(Player p) {
+    /**
+     * Allows the player to play game via a serious of inputs into the console
+     */
+
+    public boolean playersTurn(Player p) {
 
 
         Scanner input = new Scanner(System.in);
         String in;
         if (!p.getTurn()) {
             System.out.print("It is " + p.getName() + "'s turn please make sure they have the tablet and enter any key to continue: ");
-            in = input.next();
+            input.next();
             p.setTurn(true);
+            p.setRollStatus(false);
+            p.setGuessStatus(false);
 
         }
         //Display the board before the players turn
@@ -75,9 +83,11 @@ public class Game {
         if (in.equals("R") && !p.getRollStatus()) {
             p.roll();
             playersTurn(p);
+            p.setRollStatus(true);
         } else if (in.equals("R") && p.getRollStatus()) {
             System.out.println("Already Rolled");
             playersTurn(p);
+
         }
         Matcher matcher = dirPat.matcher(in);
         boolean matchFound = matcher.matches();
@@ -94,29 +104,45 @@ public class Game {
             playersTurn(p);
         }
 
-        if (in.equals("G")) {
+        if (in.equals("G") && !p.getGuessStatus()) {
+            p.setGuessStatus(true);
             refuteOrder(p);
             makeGuess(p);
             refuteCards.clear();
+            clearScreen();
             refute(p.getGuess());
+            clearScreen();
             System.out.println("Please past the tablet back to " + p.getName());
-            in = input.next();
+            input.next();
             System.out.println("Refute cards are: ");
             for (int i = 0; i < refuteCards.size(); i++) {
                 System.out.println(i + ": " + refuteCards.get(i).getName());
             }
 
+        }else if(in.equals("G") && p.getGuessStatus()){
+            System.out.println("You have already guessed");
+            playersTurn(p);
         }
 
-        if (in.equals("F")) {
-
+        if (in.equals("F") && !p.getGuessStatus()) {
+            p.setIsout(finalGuess());
         }
 
         if (in.equals("E")) {
             p.setTurn(false);
             clearScreen();
-            return;
+            return false;
         }
+        return false;
+    }
+
+    /**
+     * Player is making final guess checks to see if they have won or not
+     */
+
+    public boolean finalGuess(){
+
+        return false;
     }
 
     /**
@@ -165,6 +191,7 @@ public class Game {
                 tempPlayers.remove(tempPlayers.get(i));
 
             }
+            clearScreen();
             refute(guess);
 
         }
@@ -231,13 +258,14 @@ public class Game {
         int i = Integer.parseInt(in.substring(0, 1));
         int j = Integer.parseInt(in.substring(2, 3));
 
+        //last digit could be either singular or double so need to check for that
         int k;
         if (in.length() == 6) {
             k = Integer.parseInt(in.substring(4, 6));
         } else {
             k = Integer.parseInt(in.substring(4, 5));
         }
-
+        //cards are in order from character to estatae to weapon so if one of the variables means player grabbed two or more of one type
         if (i > 3 || (j < 4 || j > 8) || (k < 9 || k > 13)) {
             System.out.println("Please pick one of each card");
             makeGuess(p);
@@ -440,12 +468,13 @@ public class Game {
         }
     }
 
+    /**
+     * Clears the console screen so other players can't see what the other players have done
+     */
     public static void clearScreen() {
 
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+        for (int i = 0; i < 150; ++i) System.out.println();
 
     }
-
 
 }

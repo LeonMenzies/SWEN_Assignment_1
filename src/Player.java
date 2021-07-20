@@ -20,6 +20,7 @@ public class Player extends Move implements Cloneable {
     private int steps = 0;
     private boolean rollStatus = false;
     private boolean isOut = false;
+    private boolean hasGuessed = false;
 
     private ArrayList<Card> guesses;
     private List<Card> hand;
@@ -45,8 +46,12 @@ public class Player extends Move implements Cloneable {
             int d1 = dice1.nextInt(upperBound);
             int d2 = dice2.nextInt(upperBound);
             steps = d1+d2;
-            rollStatus = true;
+
         }
+    }
+
+    public void setIsout(boolean b){
+        isOut = b;
     }
 
     public boolean getIsOut(){
@@ -54,6 +59,17 @@ public class Player extends Move implements Cloneable {
     }
     public boolean getRollStatus(){
         return rollStatus;
+    }
+    public void setRollStatus(boolean b){
+        rollStatus = b;
+    }
+
+    public boolean getGuessStatus(){
+        return hasGuessed;
+    }
+
+    public void setGuessStatus(boolean b){
+        hasGuessed = b;
     }
 
 
