@@ -38,8 +38,9 @@ public class Game {
     public void playGame(Board board) {
         Random rand = new Random();
         int i = rand.nextInt(players.size());
-        System.out.println(i);
+
         Player p = players.get(i);
+
         generateStartingOrder(p);
         while (!gameWon) {
             int count = 0;
@@ -345,9 +346,11 @@ public class Game {
         //moves the ones in front of the guesser to the back of the array then removes them from the front
         int i = tempPlayers.indexOf(guesser);
 
-        for (int j = 0; j < i; j++) {
-            tempPlayers.add(tempPlayers.size(), tempPlayers.get(j));
-            tempPlayers.remove(j);
+        for (int j = 1; j>= 0; j--) {
+            Player temp = players.get(j);
+            players.remove(j);
+            players.add(temp);
+
         }
         //finally removes the guesser from the order
         tempPlayers.remove(guesser);
@@ -360,9 +363,11 @@ public class Game {
     public void generateStartingOrder(Player p) {
         int i = players.indexOf(p);
 
-        for (int j = 0; j < i; j++) {
-            players.add(players.size(), players.get(j));
+        for (int j = i-1; j >= 0;j--) {
+            Player temp = players.get(j);
             players.remove(j);
+            players.add(temp);
+
         }
 
     }
