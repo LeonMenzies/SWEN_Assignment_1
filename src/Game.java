@@ -49,18 +49,39 @@ public class Game {
     public void playGame(Board board) {
         Random rand = new Random();
         int i = rand.nextInt(players.size());
+
         Player p = players.get(i);
+
         generateStartingOrder(p);
         while (!gameWon) {
+            int count = 0;
+
             for (Player player : players) {
                 if (!player.getIsOut()) {
                     gameWon = playersTurn(player);
+                    if(gameWon){
+                        break;
+                    }
+
                 }
+
+                if(player.getIsOut()){
+                    count++;
+                }
+            }
+            if (count == players.size()) {
+                break;
             }
 
         }
+        if(gameWon){
+            System.out.println("The winner is " + winner.getName()+ "!");
 
-        System.out.println("The winner is " + winner.getName());
+        }else {
+            System.out.println("All Play's lost game is over!");
+        }
+
+
 
     }
 
@@ -79,6 +100,7 @@ public class Game {
             p.setTurn(true);
             p.setRollStatus(false);
             p.setGuessStatus(false);
+            //p.clearVisted();
 
         }
         //Display the board before the players turn
@@ -93,8 +115,8 @@ public class Game {
         in = checkInput(in);
         if (in.equals("R") && !p.getRollStatus()) {
             p.roll();
-            playersTurn(p);
             p.setRollStatus(true);
+            playersTurn(p);
         } else if (in.equals("R") && p.getRollStatus()) {
             System.out.println("Already Rolled");
             playersTurn(p);
@@ -137,11 +159,13 @@ public class Game {
 
         if (in.equals("F") && !p.getGuessStatus()) {
             makeGuess(p);
-            p.setIsout(checkWin(p.getGuess()));
-            if(!p.getIsOut()){
+            p.setHasWon(checkWin(p.getGuess()));
+            if(p.getHasWon()){
+                winner = p;
                 return true;
             }else{
-                System.out.println("You are out "+ p.getName() + "you can't guess or move but can still refute");
+                p.setIsout(true);
+                System.out.println("You are out "+ p.getName() + " you can't guess or move but can still refute");
             }
             return false;
         }
@@ -168,10 +192,7 @@ public class Game {
             }
         }
 
-        if(count == 3){
-            return false;
-        }
-        return true;
+        return count == 3;
     }
 
     /**
@@ -294,6 +315,7 @@ public class Game {
         } else {
             k = Integer.parseInt(in.substring(4, 5));
         }
+
         //cards are in order from character to estatae to weapon so if one of the variables means player grabbed two or more of one type
         if (i > 3 || (j < 4 || j > 8) || (k < 9 || k > 13)) {
             System.out.println("Please pick one of each card");
@@ -336,9 +358,11 @@ public class Game {
         //moves the ones in front of the guesser to the back of the array then removes them from the front
         int i = tempPlayers.indexOf(guesser);
 
-        for (int j = 0; j < i; j++) {
-            tempPlayers.add(tempPlayers.size(), tempPlayers.get(j));
-            tempPlayers.remove(j);
+        for (int j = 1; j>= 0; j--) {
+            Player temp = players.get(j);
+            players.remove(j);
+            players.add(temp);
+
         }
         //finally removes the guesser from the order
         tempPlayers.remove(guesser);
@@ -351,9 +375,11 @@ public class Game {
     public void generateStartingOrder(Player p) {
         int i = players.indexOf(p);
 
-        for (int j = 0; j < i; j++) {
-            players.add(players.size(), players.get(j));
+        for (int j = i-1; j >= 0;j--) {
+            Player temp = players.get(j);
             players.remove(j);
+            players.add(temp);
+
         }
 
     }

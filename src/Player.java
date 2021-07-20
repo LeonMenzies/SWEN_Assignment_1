@@ -12,19 +12,20 @@ public class Player extends Move implements Cloneable {
     int row;
     int col;
 
-
-
-    List<Cell> visited;
+    //private ArrayList<Cells.Cell> visited;
+    private Map<Integer, Integer> visited = new HashMap<>();
 
     private Random dice1 = new Random();
     private Random dice2 = new Random();
 
+    private int upperBound = 6;
     private Cell currentCell;
 
     private int upperBound = 7;
     private int steps = 0;
     private boolean rollStatus = false;
     private boolean isOut = false;
+    private boolean hasWon = false;
     private boolean hasGuessed = false;
 
     private ArrayList<Card> guesses;
@@ -50,14 +51,19 @@ public class Player extends Move implements Cloneable {
 
     public void roll(){
         if(turn){
-            int d1 = dice1.nextInt(upperBound);
-            int d2 = dice2.nextInt(upperBound);
+            int d1 = dice1.nextInt(upperBound)+1;
+            int d2 = dice2.nextInt(upperBound)+1;
             steps = d1+d2;
-            steps = 100;
 
         }
     }
 
+    public void setHasWon(boolean b){
+        hasWon = b;
+    }
+    public boolean getHasWon(){
+        return hasWon;
+    }
     public void setIsout(boolean b){
         isOut = b;
     }
@@ -100,6 +106,7 @@ public class Player extends Move implements Cloneable {
     public void move(Board b, String direction){
         if(isValid(b, direction)){
             steps--;
+
             Cell[][] cells = b.getCells();
             PlayerCell playerCell = (PlayerCell) cells[row][col];
             cells[row][col] = new FreeCell(row, col);
@@ -194,6 +201,7 @@ public class Player extends Move implements Cloneable {
             return true;
         }
         return false;
+    }
     }
 
     public void setTurn(boolean aTurn) {
