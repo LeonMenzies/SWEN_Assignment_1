@@ -89,6 +89,7 @@ public class Game {
             p.setTurn(true);
             p.setRollStatus(false);
             p.setGuessStatus(false);
+            //p.clearVisted();
 
         }
         //Display the board before the players turn
@@ -103,8 +104,8 @@ public class Game {
         in = checkInput(in);
         if (in.equals("R") && !p.getRollStatus()) {
             p.roll();
-            playersTurn(p);
             p.setRollStatus(true);
+            playersTurn(p);
         } else if (in.equals("R") && p.getRollStatus()) {
             System.out.println("Already Rolled");
             playersTurn(p);
