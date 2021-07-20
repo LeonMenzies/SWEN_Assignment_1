@@ -38,6 +38,7 @@ public class Game {
     public void playGame(Board board) {
         Random rand = new Random();
         int i = rand.nextInt(players.size());
+        System.out.println(i);
         Player p = players.get(i);
         generateStartingOrder(p);
         while (!gameWon) {

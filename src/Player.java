@@ -16,10 +16,11 @@ public class Player extends Move implements Cloneable {
     private Random dice1 = new Random();
     private Random dice2 = new Random();
 
-    private int upperBound = 7;
+    private int upperBound = 6;
     private int steps = 0;
     private boolean rollStatus = false;
     private boolean isOut = false;
+    private boolean hasWon = false;
     private boolean hasGuessed = false;
 
     private ArrayList<Card> guesses;
@@ -43,13 +44,19 @@ public class Player extends Move implements Cloneable {
 
     public void roll(){
         if(turn){
-            int d1 = dice1.nextInt(upperBound);
-            int d2 = dice2.nextInt(upperBound);
+            int d1 = dice1.nextInt(upperBound)+1;
+            int d2 = dice2.nextInt(upperBound)+1;
             steps = d1+d2;
 
         }
     }
 
+    public void setHasWon(boolean b){
+        hasWon = b;
+    }
+    public boolean getHasWon(){
+        return hasWon;
+    }
     public void setIsout(boolean b){
         isOut = b;
     }
@@ -151,12 +158,12 @@ public class Player extends Move implements Cloneable {
 
             case "S":
                 if(col < 24) {
-                    return cells[row][col + 1] instanceof FreeCell;
+                    return cells[row + 1][col] instanceof FreeCell;
                 }
 
             case "D":
                 if(row < 24) {
-                    return cells[row + 1][col] instanceof FreeCell;
+                    return cells[row][col + 1] instanceof FreeCell;
                 }
 
             default:
