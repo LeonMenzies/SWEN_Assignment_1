@@ -12,8 +12,7 @@ public class Player extends Move implements Cloneable {
     int row;
     int col;
 
-    //private ArrayList<Cells.Cell> visited;
-    private Map<Integer, Integer> visited = new HashMap<>();
+    private List<Cell> visited;
 
     private Random dice1 = new Random();
     private Random dice2 = new Random();
@@ -21,7 +20,6 @@ public class Player extends Move implements Cloneable {
     private int upperBound = 6;
     private Cell currentCell;
 
-    private int upperBound = 7;
     private int steps = 0;
     private boolean rollStatus = false;
     private boolean isOut = false;
@@ -202,7 +200,7 @@ public class Player extends Move implements Cloneable {
         }
         return false;
     }
-    }
+
 
     public void setTurn(boolean aTurn) {
         this.turn = aTurn;
