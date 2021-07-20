@@ -125,7 +125,14 @@ public class Game {
         }
 
         if (in.equals("F") && !p.getGuessStatus()) {
-            p.setIsout(finalGuess());
+            makeGuess(p);
+            p.setIsout(checkWin(p.getGuess()));
+            if(!p.getIsOut()){
+                return true;
+            }else{
+                System.out.println("You are out "+ p.getName() + "you can't guess or move but can still refute");
+            }
+            return false;
         }
 
         if (in.equals("E")) {
@@ -140,9 +147,20 @@ public class Game {
      * Player is making final guess checks to see if they have won or not
      */
 
-    public boolean finalGuess(){
+    public boolean checkWin(List<Card> guess){
+        int count = 0;
+        for(Card c : circumstance){
+            for(Card c1 : guess){
+                if(c.getName().equals(c1.getName())){
+                    count++;
+                }
+            }
+        }
 
-        return false;
+        if(count == 3){
+            return false;
+        }
+        return true;
     }
 
     /**
