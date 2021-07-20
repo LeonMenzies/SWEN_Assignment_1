@@ -5,16 +5,21 @@ import java.util.Random;
 
 public class Player extends Move implements Cloneable {
     private boolean turn = false;
+    private Estate estateIn = null;
+
     private String name;
 
     int row;
     int col;
 
-    //private ArrayList<Cells.Cell> visited;
-    private Map<Integer, Integer> visited = new HashMap<>();
+
+
+    List<Cell> visited;
 
     private Random dice1 = new Random();
     private Random dice2 = new Random();
+
+    private Cell currentCell;
 
     private int upperBound = 7;
     private int steps = 0;
@@ -31,6 +36,8 @@ public class Player extends Move implements Cloneable {
         this.col = col;
         hand = new ArrayList<>();
         guesses = new ArrayList<>();
+        currentCell = new FreeCell(row, col);
+        visited = new ArrayList<>();
     }
 
     public String getName(){
@@ -46,6 +53,7 @@ public class Player extends Move implements Cloneable {
             int d1 = dice1.nextInt(upperBound);
             int d2 = dice2.nextInt(upperBound);
             steps = d1+d2;
+            steps = 100;
 
         }
     }
@@ -92,43 +100,42 @@ public class Player extends Move implements Cloneable {
     public void move(Board b, String direction){
         if(isValid(b, direction)){
             steps--;
-
             Cell[][] cells = b.getCells();
             PlayerCell playerCell = (PlayerCell) cells[row][col];
-            cells[row][col] = new FreeCell();
+            cells[row][col] = new FreeCell(row, col);
+
+            visited.add(b.getCell(row, col));
+
 
             switch (direction){
                 case "W":
                     cells[row - 1][col] = playerCell;
                     row = row - 1;
-                    visited.put(row, col);
                     b.setCells(cells);
                     break;
 
                 case "A":
                     cells[row][col - 1] = playerCell;
                     col = col - 1;
-                    visited.put(row, col);
                     b.setCells(cells);
                     break;
 
                 case "S":
                     cells[row + 1][col] = playerCell;
                     row = row + 1;
-                    visited.put(row, col);
                     b.setCells(cells);
                     break;
 
                 case "D":
                     cells[row][col + 1] = playerCell;
                     col = col + 1;
-                    visited.put(row, col);
                     b.setCells(cells);
                     break;
 
                 default:
                     break;
             }
+            b.redrawEstates();
         } else {
             System.out.println("Move is not valid");
         }
@@ -136,32 +143,57 @@ public class Player extends Move implements Cloneable {
 
     @Override
     public boolean isValid(Board b, String direction) {
-        Cell[][] cells = b.getCells();
 
-        switch (direction) {
-            case "W":
-                if(row > 0) {
-                    return cells[row - 1][col] instanceof FreeCell;
-                }
+        int tempRow = row;
+        int tempCol = col;
 
-            case "A":
-                if(col > 0) {
-                    return cells[row][col - 1] instanceof FreeCell;
-                }
-
-            case "S":
-                if(col < 24) {
-                    return cells[row][col + 1] instanceof FreeCell;
-                }
-
-            case "D":
-                if(row < 24) {
-                    return cells[row + 1][col] instanceof FreeCell;
-                }
-
+        switch(direction){
+            case"W":
+                tempRow = tempRow - 1;
+                break;
+            case"A":
+                tempCol--;
+                break;
+            case"S":
+                tempRow++;
+                break;
+            case"D":
+                tempCol++;
+                break;
             default:
-                return false;
+                break;
         }
+        Cell[][] c = b.getCells();
+
+        if(outOfBounds(tempRow, tempCol) || !checkVisited(c[tempRow][tempCol])){
+            return false;
+        }
+
+        if(c[tempRow][tempCol] != null){
+            if(c[tempRow][tempCol] instanceof FreeCell){
+                return true;
+            }
+            if(c[tempRow][tempCol] instanceof EstateCell){
+                EstateCell ec = (EstateCell)c[tempRow][tempCol];
+
+                if(ec.isDoor){
+
+                    estateIn = b.getEstate(ec.getName());
+                    estateIn.addPlayersInEstate(this, (PlayerCell) c[row][col]);
+
+
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean outOfBounds(int tempRow, int tempCol) {
+        if(tempCol > 23 || tempCol > 23 || tempCol < 0 || tempRow < 0){
+            return true;
+        }
+        return false;
     }
 
     public void setTurn(boolean aTurn) {
@@ -207,4 +239,13 @@ public class Player extends Move implements Cloneable {
     public int getCol() {
         return col;
     }
+
+    public boolean checkVisited(Cell c){
+        if(visited.contains(c)){
+            return false;
+        }
+        return true;
+    }
+
+    public void clearVisited() { visited.clear(); }
 }

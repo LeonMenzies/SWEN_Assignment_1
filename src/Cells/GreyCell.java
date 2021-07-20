@@ -1,6 +1,10 @@
 package Cells;
 
-public class GreyCell implements Cells.Cell {
+public class GreyCell extends Cells.Cell {
+
+    public GreyCell(int row, int col){
+        super(row, col);
+    }
 
 
     @Override

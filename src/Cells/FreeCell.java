@@ -1,6 +1,9 @@
 package Cells;
 
-public class FreeCell implements Cells.Cell {
+public class FreeCell extends Cells.Cell {
+    public FreeCell(int row, int col){
+        super(row, col);
+    }
 
 
     @Override

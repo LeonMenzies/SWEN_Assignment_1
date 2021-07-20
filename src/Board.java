@@ -4,6 +4,8 @@ import java.util.*;
 
 public class Board {
 
+    Map<String, Estate> estates = new HashMap<>();
+
 
     Cell[][] cells;
 
@@ -35,66 +37,21 @@ public class Board {
             "|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\n";
     // @formatter:on
 
-    private final List<Player> players;
-    private final List<Estate> estates;
-    private final List<Weapon> weapons;
 
     public Board(int width, int height){
         cells = new Cell[width][height];
-
-        players = new ArrayList<>();
-        estates = new ArrayList<>();
-        weapons = new ArrayList<>();
+        estates.put("Haunted Door", new Estate("Haunted House"));
+        estates.put("Manic Door", new Estate("Manic Manor"));
+        estates.put("Peril Door", new Estate("Peril Palace"));
+        estates.put("Calamity Door", new Estate("Calamity Castle"));
+        estates.put("Villa Door", new Estate("Villa Celia"));
     }
 
-
-    public List<Player> getPlayers() {
-        return this.players;
+    public void redrawEstates(){
+        for(Map.Entry<String, Estate> mp : estates.entrySet()){
+            mp.getValue().redrawEstate(this);
+        }
     }
-
-    public List<Estate> getEstates() {
-        return this.estates;
-    }
-
-    public List<Weapon> getWeapons() {
-        return this.weapons;
-    }
-
-
-    public void removePlayer(Player aPlayer) {
-        this.players.remove(aPlayer);
-    }
-
-    public void addEstate(Estate aEstate) {
-        this.estates.add(aEstate);
-    }
-
-    public void removeEstate(Estate aEstate) {
-        this.estates.remove(aEstate);
-    }
-
-    public void addWeapon(Weapon aWeapon) {
-        this.weapons.add(aWeapon);
-    }
-
-    public void removeWeapon(Weapon aWeapon) {
-        this.weapons.remove(aWeapon);
-    }
-
-    public void delete() {
-        players.clear();
-        estates.clear();
-        weapons.clear();
-    }
-
-    public void apply(Move m) {
-
-    }
-
-    public void randomWeapRooms() {
-
-    }
-
 
     public void setup() {
 
@@ -107,40 +64,73 @@ public class Board {
 
             switch(sc.next()) {
                 case "__":
-                    cells[row][col++] = new FreeCell();
+                    cells[row][col++] = new FreeCell(row, col);
                     break;
                 case "GC":
-                    cells[row][col++] = new GreyCell();
+                    cells[row][col++] = new GreyCell(row, col);
                     break;
                 case "CC":
-                    cells[row][col++] = new EstateCell("Calamity", "Castle", false);
+                    EstateCell cc = new EstateCell(row, col,"Calamity", "Castle", false);
+
+                    Estate e = estates.get("Calamity Door");
+                    e.addCell(cc);
+
+                    cells[row][col++] = cc;
+                    estates.get("Calamity Door").addCell(cc);
                     break;
                 case "CD":
-                    cells[row][col++] = new EstateCell("Calamity", "Door", true);
+                    EstateCell cd = new EstateCell(row, col,"Calamity", "Door", true);
+
+                    cells[row][col++] = cd;
+                    estates.get("Calamity Door").addCell(cd);
                     break;
                 case "PP":
-                    cells[row][col++] = new EstateCell("Peril", "Palace", false);
+                    EstateCell pp = new EstateCell(row, col,"Peril", "Palace", false);
+
+                    cells[row][col++] = pp;
+                    estates.get("Peril Door").addCell(pp);
                     break;
                 case "PD":
-                    cells[row][col++] = new EstateCell("Peril", "Door", true);
+                    EstateCell pd = new EstateCell(row, col,"Peril", "Door", true);
+
+                    cells[row][col++] = pd;
+                    estates.get("Peril Door").addCell(pd);
                     break;
                 case "MM":
-                    cells[row][col++] = new EstateCell("Manic", "Manor", false);
+                    EstateCell mm = new EstateCell(row, col,"Manic", "Manor", false);
+
+                    cells[row][col++] = mm;
+                    estates.get("Manic Door").addCell(mm);
                     break;
                 case "MD":
-                    cells[row][col++] = new EstateCell("Manic", "Door", true);
+                    EstateCell md = new EstateCell(row, col,"Manic", "Door", true);
+
+                    cells[row][col++] = md;
+                    estates.get("Manic Door").addCell(md);
                     break;
                 case "HH":
-                    cells[row][col++] = new EstateCell("Haunted", "House", false);
+                    EstateCell hh = new EstateCell(row, col,"Haunted", "House", false);
+
+                    cells[row][col++] = hh;
+                    estates.get("Haunted Door").addCell(hh);
                     break;
                 case "HD":
-                    cells[row][col++] = new EstateCell("Haunted", "Door", true);
+                    EstateCell hd = new EstateCell(row, col,"Haunted", "Door", true);
+
+                    cells[row][col++] = hd;
+                    estates.get("Haunted Door").addCell(hd);
                     break;
                 case "VC":
-                    cells[row][col++] = new EstateCell("Villa", "Celia", false);
+                    EstateCell vc = new EstateCell(row, col,"Villa", "Celia", false);
+
+                    cells[row][col++] = vc;
+                    estates.get("Villa Door").addCell(vc);
                     break;
                 case "VD":
-                    cells[row][col++] = new EstateCell("Villa", "Door", true);
+                    EstateCell vd = new EstateCell(row, col,"Villa", "Door", true);
+
+                    cells[row][col++] = vd;
+                    estates.get("Villa Door").addCell(vd);
                     break;
                 default:
                     row++;
@@ -150,13 +140,20 @@ public class Board {
     }
 
     public void setPlayer(Player p){
-        cells[p.getRow()][p.getCol()] = new PlayerCell(p.getName());
+        cells[p.getRow()][p.getCol()] = new PlayerCell(p.getRow(), p.getCol(), p.getName());
+    }
+
+    public Estate getEstate(String name){
+        return estates.get(name);
+    }
+
+    public Cell getCell(int row, int col){
+        return cells[row][col];
     }
 
 
     @Override
     public String toString() {
-
         StringBuilder sb = new StringBuilder();
         for(Cell[] c1 : cells) {
 
@@ -168,6 +165,10 @@ public class Board {
             sb.append("\n");
         }
         return sb.toString();
+    }
+
+    public void redrawCell(int row, int col, Cell c){
+        cells[row][col] = c;
     }
 
     public Cell[][] getCells(){

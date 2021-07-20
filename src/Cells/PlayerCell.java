@@ -1,10 +1,11 @@
 package Cells;
 
-public class PlayerCell implements Cells.Cell {
+public class PlayerCell extends Cells.Cell {
 
     String name;
 
-    public PlayerCell(String name){
+    public PlayerCell(int row, int col, String name){
+        super(row, col);
         this.name = name;
     }
 
