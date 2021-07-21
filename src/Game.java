@@ -111,7 +111,7 @@ public class Game {
         } else {
             System.out.println("H(Show Hand), G(guess), F(Final Guess), E(END TURN) or WASD(Move)");
         }
-        in = input.next().toUpperCase(Locale.ROOT);
+        in = input.next();
         in = checkInput(in);
         if (in.equals("R") && !p.getRollStatus()) {
             p.roll();
@@ -122,6 +122,7 @@ public class Game {
             playersTurn(p);
 
         }
+
         Matcher matcher = dirPat.matcher(in);
         boolean matchFound = matcher.matches();
         if (matchFound && p.getSteps() != 0) {
@@ -175,6 +176,8 @@ public class Game {
             clearScreen();
             return false;
         }
+        System.out.println(in);
+        System.out.println("Hello");
         return false;
     }
 
@@ -300,38 +303,50 @@ public class Game {
         }
 
         //scans in the 3 cards as a string then break them into there numbers
-        Scanner input = new Scanner(System.in);
-        String in;
-        System.out.println("Please select 3 cards as your guess eg 1,5,10");
-        in = input.next();
+        int i = 0;
+        int j = 0;
+        int k = 0;
+        while(true) {
+            Scanner input = new Scanner(System.in);
+            String in;
+            System.out.println("Please select 3 cards as your guess eg 1,5,10");
+            in = input.next();
+            if (in.length() < 5 || in.length() > 6) {
+                System.out.println("Please select three cards");
 
-        int i = Integer.parseInt(in.substring(0, 1));
-        int j = Integer.parseInt(in.substring(2, 3));
+            }else {
+                i = Integer.parseInt(in.substring(0, 1));
+                j = Integer.parseInt(in.substring(2, 3));
 
-        //last digit could be either singular or double so need to check for that
-        int k;
-        if (in.length() == 6) {
-            k = Integer.parseInt(in.substring(4, 6));
-        } else {
-            k = Integer.parseInt(in.substring(4, 5));
-        }
+                //last digit could be either singular or double so need to check for that
 
-        //cards are in order from character to estatae to weapon so if one of the variables means player grabbed two or more of one type
-        if (i > 3 || (j < 4 || j > 8) || (k < 9 || k > 13)) {
-            System.out.println("Please pick one of each card");
-            makeGuess(p);
-        }
+                if (in.length() == 6) {
+                    k = Integer.parseInt(in.substring(4, 6));
+                } else {
+                    k = Integer.parseInt(in.substring(4, 5));
+                }
+            }
+            //cards are in order from character to estatae to weapon so if one of the variables means player grabbed two or more of one type
+            if (i > 3 || (j < 4 || j > 8) || (k < 9 || k > 13)) {
+                System.out.println("Please pick one of each card");
 
-        CharacterCard gWho = (CharacterCard) tempDeck.get(i);
-        EstateCard gWhere = (EstateCard) tempDeck.get(j);
-        WeaponCard gWhat = (WeaponCard) tempDeck.get(k);
+            }else{
+                break;
+            }
 
 
-        //implement once we figure out how to check if they are in an estate
+
+
+            //implement once we figure out how to check if they are in an estate
 //        if(gWhere.getName() != player.getEstateName()){
 //            System.out.println("Please pick the estate you are currently in");
 //            makeGuess(p);
 //        }
+
+        }
+        CharacterCard gWho = (CharacterCard) tempDeck.get(i);
+        EstateCard gWhere = (EstateCard) tempDeck.get(j);
+        WeaponCard gWhat = (WeaponCard) tempDeck.get(k);
         p.addGuess(gWho);
         p.addGuess(gWhere);
         p.addGuess(gWhat);
@@ -388,18 +403,28 @@ public class Game {
      * Checks to make sure the player has entered a correct move key
      */
     public String checkInput(String in) {
-        Scanner input = new Scanner(System.in);
+
         //if a match is found that key can be returned otherwise the player can keep trying until its valid
-        Matcher matcher = MovePat.matcher(in);
-        boolean matchFound = matcher.matches();
-        if (matchFound) {
-            return in;
-        } else {
-            System.out.println("Please enter a Valid Move");
-            in = input.next();
-            checkInput(in);
+
+        while(true) {
+            Scanner input = new Scanner(System.in);
+            if (in.length() > 1) {
+
+                System.out.println("Please enter a Valid Move");
+                in = input.next();
+
+            }
+            Matcher matcher = MovePat.matcher(in);
+            boolean matchFound = matcher.matches();
+
+            if (matchFound) {
+                return in;
+            } else {
+                System.out.println("Please enter a Valid Move");
+                in = input.next();
+
+            }
         }
-        return in;
     }
 
     /**
@@ -408,14 +433,13 @@ public class Game {
      */
     public void playerSetUp() {
         //scans in a string from the console
-        Scanner input = new Scanner(System.in);
-        System.out.print("Enter the number of Players between 3 & 4: ");
-        String numPlayers = input.next();
+        String numPlayers;
+        do {
+            Scanner input = new Scanner(System.in);
+            System.out.print("Enter the number of Players between 3 & 4: ");
+            numPlayers = input.next();
 
-        if (!numPlayers.equals("3") && !numPlayers.equals("4")) {
-            playerSetUp();
-        }
-
+        } while (!numPlayers.equals("3") && !numPlayers.equals("4"));
 
         //players are then added to the array depending on the amount
         players.add(new Player("Lucilla", 9, 1));
