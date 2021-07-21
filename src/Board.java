@@ -1,37 +1,40 @@
 import Cells.*;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
+/***
+ * The board class holds all the information about the board including its initial state as well as methods to alter its state
+ */
 public class Board {
 
     Map<String, Estate> estates = new HashMap<>();
-
-
     Cell[][] cells;
+    public final Pattern EXITCELLPATTERN = Pattern.compile("WV|AV|SV|DV|DH|SH|AM|SM|WP|AP|WC|DC");
 
     // @formatter:off
     String boardCells =
             "|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\n" +
             "|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\n" +
             "|__|__|HH|HH|HH|HH|HH|__|__|__|__|__|__|__|__|__|__|MM|MM|MM|MM|MM|__|__|\n" +
-            "|__|__|HH|HH|HH|HH|HD|__|__|__|__|__|__|__|__|__|__|MM|MM|MM|MM|MM|__|__|\n" +
+            "|__|__|HH|HH|HH|HH|HD|DH|__|__|__|__|__|__|__|__|__|MM|MM|MM|MM|MM|__|__|\n" +
             "|__|__|HH|HH|HH|HH|HH|__|__|__|__|__|__|__|__|__|__|MM|MM|MM|MM|MM|__|__|\n" +
-            "|__|__|HH|HH|HH|HH|HH|__|__|__|__|GC|GC|__|__|__|__|MD|MM|MM|MM|MM|__|__|\n" +
+            "|__|__|HH|HH|HH|HH|HH|__|__|__|__|GC|GC|__|__|__|AM|MD|MM|MM|MM|MM|__|__|\n" +
             "|__|__|HH|HH|HH|HD|HH|__|__|__|__|GC|GC|__|__|__|__|MM|MM|MM|MD|MM|__|__|\n" +
+            "|__|__|__|__|__|SH|__|__|__|__|__|__|__|__|__|__|__|__|__|__|SM|__|__|__|\n" +
             "|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\n" +
-            "|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\n" +
-            "|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\n" +
+            "|__|__|__|__|__|__|__|__|__|__|__|__|WV|__|__|__|__|__|__|__|__|__|__|__|\n" +
             "|__|__|__|__|__|__|__|__|__|VC|VC|VC|VD|VC|VC|__|__|__|__|__|__|__|__|__|\n" +
-            "|__|__|__|__|__|GC|GC|__|__|VC|VC|VC|VC|VC|VD|__|__|GC|GC|__|__|__|__|__|\n" +
-            "|__|__|__|__|__|GC|GC|__|__|VD|VC|VC|VC|VC|VC|__|__|GC|GC|__|__|__|__|__|\n" +
+            "|__|__|__|__|__|GC|GC|__|__|VC|VC|VC|VC|VC|VD|DV|__|GC|GC|__|__|__|__|__|\n" +
+            "|__|__|__|__|__|GC|GC|__|AV|VD|VC|VC|VC|VC|VC|__|__|GC|GC|__|__|__|__|__|\n" +
             "|__|__|__|__|__|__|__|__|__|VC|VC|VD|VC|VC|VC|__|__|__|__|__|__|__|__|__|\n" +
+            "|__|__|__|__|__|__|__|__|__|__|__|SV|__|__|__|__|__|__|__|__|__|__|__|__|\n" +
             "|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\n" +
-            "|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\n" +
-            "|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\n" +
+            "|__|__|__|WC|__|__|__|__|__|__|__|__|__|__|__|__|__|__|WP|__|__|__|__|__|\n" +
             "|__|__|CC|CD|CC|CC|CC|__|__|__|__|GC|GC|__|__|__|__|PP|PD|PP|PP|PP|__|__|\n" +
-            "|__|__|CC|CC|CC|CC|CD|__|__|__|__|GC|GC|__|__|__|__|PP|PP|PP|PP|PP|__|__|\n" +
+            "|__|__|CC|CC|CC|CC|CD|DC|__|__|__|GC|GC|__|__|__|__|PP|PP|PP|PP|PP|__|__|\n" +
             "|__|__|CC|CC|CC|CC|CC|__|__|__|__|__|__|__|__|__|__|PP|PP|PP|PP|PP|__|__|\n" +
-            "|__|__|CC|CC|CC|CC|CC|__|__|__|__|__|__|__|__|__|__|PD|PP|PP|PP|PP|__|__|\n" +
+            "|__|__|CC|CC|CC|CC|CC|__|__|__|__|__|__|__|__|__|AP|PD|PP|PP|PP|PP|__|__|\n" +
             "|__|__|CC|CC|CC|CC|CC|__|__|__|__|__|__|__|__|__|__|PP|PP|PP|PP|PP|__|__|\n" +
             "|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\n" +
             "|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\n";
@@ -40,29 +43,36 @@ public class Board {
 
     public Board(int width, int height){
         cells = new Cell[width][height];
-        estates.put("Haunted Door", new Estate("Haunted House"));
-        estates.put("Manic Door", new Estate("Manic Manor"));
-        estates.put("Peril Door", new Estate("Peril Palace"));
-        estates.put("Calamity Door", new Estate("Calamity Castle"));
-        estates.put("Villa Door", new Estate("Villa Celia"));
+        //Add all the estates to this board with lists of indexes to free storage cells
+        estates.put("Haunted Door", new Estate("Haunted House", new ArrayList<>(Arrays.asList(5, 6, 7, 10, 11, 12, 15, 16, 17))));
+        estates.put("Manic Door", new Estate("Manic Manor", new ArrayList<>(Arrays.asList(5, 6, 7, 10, 11, 12, 15, 16, 17))));
+        estates.put("Peril Door", new Estate("Peril Palace", new ArrayList<>(Arrays.asList(5, 6, 7, 10, 11, 12, 15, 16, 17))));
+        estates.put("Calamity Door", new Estate("Calamity Castle", new ArrayList<>(Arrays.asList(5, 6, 7, 10, 11, 12, 15, 16, 17))));
+        estates.put("Villa Door", new Estate("Villa Celia", new ArrayList<>(Arrays.asList(6, 7, 8, 9, 12, 13, 14, 15))));
     }
 
+    /**
+     * Redraw the estates to update objects inside
+     */
     public void redrawEstates(){
         for(Map.Entry<String, Estate> mp : estates.entrySet()){
             mp.getValue().redrawEstate(this);
         }
     }
 
+    /**
+     * This method sets up the board before the game starts
+     */
     public void setup() {
-
         Scanner sc = new Scanner(boardCells).useDelimiter("\\|");
 
         int row = 0;
         int col = 0;
 
+        //The switch checks for the cell type and add it to the 2d array that makes up the baord
         while(sc.hasNext()){
-
-            switch(sc.next()) {
+            String next = sc.next();
+            switch(next) {
                 case "__":
                     cells[row][col++] = new FreeCell(row, col);
                     break;
@@ -71,9 +81,6 @@ public class Board {
                     break;
                 case "CC":
                     EstateCell cc = new EstateCell(row, col,"Calamity", "Castle", false);
-
-                    Estate e = estates.get("Calamity Door");
-                    e.addCell(cc);
 
                     cells[row][col++] = cc;
                     estates.get("Calamity Door").addCell(cc);
@@ -133,10 +140,61 @@ public class Board {
                     estates.get("Villa Door").addCell(vd);
                     break;
                 default:
-                    row++;
-                    col = 0;
+
+                    //If the cell is an exit door cell this method add it to the correct estate as well as the exit direction
+                    if(EXITCELLPATTERN.matcher(next).find()){
+                        Cell exitCell = new FreeCell(row, col);
+                        cells[row][col++] = exitCell;
+
+                        String key = next.substring(1, 2);
+                        String direction = next.substring(0, 1);
+
+                        switch (key) {
+                            case "V":
+                                estates.get("Villa Door").addExitCell(exitCell, direction);
+                                break;
+                            case "H":
+                                estates.get("Haunted Door").addExitCell(exitCell, direction);
+                                break;
+                            case "P":
+                                estates.get("Peril Door").addExitCell(exitCell, direction);
+                                break;
+                            case "M":
+                                estates.get("Manic Door").addExitCell(exitCell, direction);
+                                break;
+                            case "C":
+                                estates.get("Calamity Door").addExitCell(exitCell, direction);
+                                break;
+                            default:
+                        }
+                    } else {
+                        row++;
+                        col = 0;
+                    }
             }
         }
+    }
+
+    /**
+     * Redraw a single cell at a given position
+     * @param row the row to be redrawn
+     * @param col the col to be redrawn
+     * @param c the cell to to be drawn in that destination
+     */
+    public void redrawCell(int row, int col, Cell c){
+        cells[row][col] = c;
+    }
+
+    /*
+     * Getters and setters
+     */
+
+    public Cell[][] getCells(){
+        return cells;
+    }
+
+    public void setCells(Cell[][] cells){
+        this.cells = cells;
     }
 
     public void setPlayer(Player p){
@@ -152,6 +210,11 @@ public class Board {
     }
 
 
+    /**
+     * This toString is for drawing the board onto the text pane for the user
+     * It simply iterates the 2d array and uses each objects toString to draw the correct cell visualizations
+     * @return The board as a big string
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -165,17 +228,5 @@ public class Board {
             sb.append("\n");
         }
         return sb.toString();
-    }
-
-    public void redrawCell(int row, int col, Cell c){
-        cells[row][col] = c;
-    }
-
-    public Cell[][] getCells(){
-        return cells;
-    }
-
-    public void setCells(Cell[][] cells){
-        this.cells = cells;
     }
 }

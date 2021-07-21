@@ -17,9 +17,6 @@ public class Game {
     Pattern MovePat = Pattern.compile("[RGHFWASDE]");
     Pattern dirPat = Pattern.compile("[WASD]");
 
-    Map<String, Estate> estates = new HashMap<>();
-
-
     private static Board board;
 
 
@@ -35,15 +32,6 @@ public class Game {
         game.generateMurder();
         game.dealCards();
         game.playGame(board);
-        game.estateSetup();
-    }
-
-    private void estateSetup() {
-        estates.put("HH", new Estate("Haunted House"));
-        estates.put("MM", new Estate("Mani Manor"));
-        estates.put("PP", new Estate("Peril Palace"));
-        estates.put("CC", new Estate("Calamity Castle"));
-        estates.put("VC", new Estate("Vila Celia"));
     }
 
     public void playGame(Board board) {

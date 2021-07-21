@@ -3,23 +3,19 @@ import Cells.*;
 import java.util.*;
 import java.util.Random;
 
+/***
+ * The player class holds all the information about the player and its status in the game. The object also has all the methods for
+ * moving the player around the board, as well as going in and out of estate objects
+ */
 public class Player extends Move implements Cloneable {
     private boolean turn = false;
     private Estate estateIn = null;
-
     private String name;
-
-    int row;
-    int col;
-
-    private List<Cell> visited;
-
+    private int row;
+    private int col;
     private Random dice1 = new Random();
     private Random dice2 = new Random();
-
-    private int upperBound = 6;
-    private Cell currentCell;
-
+    private final int UPPERBOUND = 6;
     private int steps = 0;
     private boolean rollStatus = false;
     private boolean isOut = false;
@@ -28,6 +24,7 @@ public class Player extends Move implements Cloneable {
 
     private ArrayList<Card> guesses;
     private List<Card> hand;
+    private List<Cell> visited;
 
     public Player(String name, int row, int col) {
         this.name = name;
@@ -35,84 +32,71 @@ public class Player extends Move implements Cloneable {
         this.col = col;
         hand = new ArrayList<>();
         guesses = new ArrayList<>();
-        currentCell = new FreeCell(row, col);
         visited = new ArrayList<>();
     }
 
-    public String getName(){
-        return this.name;
-    }
-
-    public int getSteps(){
-        return this.steps;
-    }
-
-    public void roll(){
-        if(turn){
-            int d1 = dice1.nextInt(upperBound)+1;
-            int d2 = dice2.nextInt(upperBound)+1;
-            steps = d1+d2;
-
+    /**
+     * Roll the dice for this player object using the upperbound const
+     */
+    public void roll() {
+        if (turn) {
+            int d1 = dice1.nextInt(UPPERBOUND) + 1;
+            int d2 = dice2.nextInt(UPPERBOUND) + 1;
+            steps = d1 + d2;
         }
     }
 
-    public void setHasWon(boolean b){
+    /**
+     * Simple method for declaring this player object as the winner
+     *
+     * @param b boolean true or false if this player object has won
+     */
+    public void setHasWon(boolean b) {
         hasWon = b;
     }
-    public boolean getHasWon(){
-        return hasWon;
-    }
-    public void setIsout(boolean b){
-        isOut = b;
-    }
 
-    public boolean getIsOut(){
-        return isOut;
-    }
-    public boolean getRollStatus(){
-        return rollStatus;
-    }
-    public void setRollStatus(boolean b){
-        rollStatus = b;
-    }
-
-    public boolean getGuessStatus(){
-        return hasGuessed;
-    }
-
-    public void setGuessStatus(boolean b){
-        hasGuessed = b;
-    }
-
-
-    public void printHand(){
-        System.out.println(this.name +"'s" +" current Hand: ");
-        for(int i = 0; i < hand.size(); i++){
-            System.out.println(i+": "+hand.get(i).name);
+    /**
+     * Display the players hand to the system out
+     */
+    public void printHand() {
+        System.out.println(this.name + "'s" + " current Hand: ");
+        for (int i = 0; i < hand.size(); i++) {
+            System.out.println(i + ": " + hand.get(i).name);
         }
     }
 
+    /**
+     * Method for cloning the player
+     *
+     * @return return a deep clone of this player object
+     */
     @Override
-    public Player clone(){
+    public Player clone() {
         Player p = new Player(this.name, this.row, this.col);
-        for(Card c: this.hand){
+        for (Card c : this.hand) {
             p.hand.add(c.clone());
         }
         return p;
     }
 
-    public void move(Board b, String direction){
-        if(isValid(b, direction)){
+    /**
+     * after checking the move is valid move the player on the given board
+     *
+     * @param b         the current board
+     * @param direction the direction the player is moving
+     */
+    public void move(Board b, String direction) {
+        if (isValid(b, direction)) {
             steps--;
 
             Cell[][] cells = b.getCells();
-            PlayerCell playerCell = (PlayerCell) cells[row][col];
+            Cell playerCell = cells[row][col];
             cells[row][col] = new FreeCell(row, col);
 
+            //Add the current cell to a visited arraylist for checking later
             visited.add(b.getCell(row, col));
 
-
-            switch (direction){
+            switch (direction) {
                 case "W":
                     cells[row - 1][col] = playerCell;
                     row = row - 1;
@@ -146,47 +130,72 @@ public class Player extends Move implements Cloneable {
         }
     }
 
+    /**
+     * This method is for checking if a desired player move is a valid move or not
+     * It also checks if the player is trying to enter an estate and reacts accordingly
+     *
+     * @param b         the current board
+     * @param direction the direction the player wants to move
+     * @return true or false if this is a vailid move
+     */
     @Override
     public boolean isValid(Board b, String direction) {
 
         int tempRow = row;
         int tempCol = col;
 
-        switch(direction){
-            case"W":
-                tempRow = tempRow - 1;
+        switch (direction) {
+            case "W":
+                tempRow--;
                 break;
-            case"A":
+            case "A":
                 tempCol--;
                 break;
-            case"S":
+            case "S":
                 tempRow++;
                 break;
-            case"D":
+            case "D":
                 tempCol++;
                 break;
             default:
                 break;
         }
+
         Cell[][] c = b.getCells();
 
-        if(outOfBounds(tempRow, tempCol) || !checkVisited(c[tempRow][tempCol])){
+        //Check if player is currently in an estate and trying to leaving in a given direction
+        if (estateIn != null) {
+            //Check for a valid exit
+            Cell newPos = estateIn.containsExit(direction);
+            if (newPos != null) {
+                //Move the player to an exit point and remove them from the estate
+                estateIn.removePlayersInEstate(this);
+                c[newPos.getRow()][newPos.getCol()] = new PlayerCell(newPos.getRow(), newPos.getCol(), this.name);
+                b.redrawEstates();
+                this.row = newPos.getRow();
+                this.col = newPos.getCol();
+                steps--;
+                estateIn = null;
+                return false;
+            }
+        }
+
+        //Make sure the move doesnt go out of bounds or is not a visited cell
+        if (outOfBounds(tempRow, tempCol) || !checkVisited(c[tempRow][tempCol])) {
             return false;
         }
 
-        if(c[tempRow][tempCol] != null){
-            if(c[tempRow][tempCol] instanceof FreeCell){
+
+        if (c[tempRow][tempCol] != null) {
+            if (c[tempRow][tempCol] instanceof FreeCell) {
                 return true;
             }
-            if(c[tempRow][tempCol] instanceof EstateCell){
-                EstateCell ec = (EstateCell)c[tempRow][tempCol];
-
-                if(ec.isDoor){
-
+            //If the player is trying to enter an estate make sure its entering a door cell and add it to that estate
+            if (c[tempRow][tempCol] instanceof EstateCell) {
+                EstateCell ec = (EstateCell) c[tempRow][tempCol];
+                if (ec.isDoor()) {
                     estateIn = b.getEstate(ec.getName());
                     estateIn.addPlayersInEstate(this, (PlayerCell) c[row][col]);
-
-
                     return true;
                 }
             }
@@ -194,13 +203,70 @@ public class Player extends Move implements Cloneable {
         return false;
     }
 
+    /**
+     * Check weather the desired move is out of the board boundaries
+     *
+     * @param tempRow the temporary column to be checked
+     * @param tempCol the temporary row to be check
+     * @return true or false boolean to signify weather the move is out of bounds
+     */
     private boolean outOfBounds(int tempRow, int tempCol) {
-        if(tempCol > 23 || tempCol > 23 || tempCol < 0 || tempRow < 0){
+        if (tempCol > 23 || tempRow > 23 || tempCol < 0 || tempRow < 0) {
             return true;
         }
         return false;
     }
 
+
+    /**
+     * Check weather a player is trying to re-visit a cell
+     *
+     * @param c the cell to be check
+     * @return true or false if the player has visited the given cell
+     */
+    public boolean checkVisited(Cell c) {
+        if (visited.contains(c)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Adds a guess card to this player
+     *
+     * @param c the guess card to add
+     */
+    public void addGuess(Card c) {
+        this.guesses.add(c);
+    }
+
+    /**
+     * Clear the guess cards for this player
+     */
+    public void clearGuess() {
+        this.guesses.clear();
+    }
+
+    /**
+     * Add a card to this players hand
+     *
+     * @param card the card to be added
+     */
+    public void addHand(Card card) {
+        this.hand.add(card);
+    }
+
+
+    /*
+     * Getter and setters for this player object
+     */
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
+    }
 
     public void setTurn(boolean aTurn) {
         this.turn = aTurn;
@@ -210,7 +276,7 @@ public class Player extends Move implements Cloneable {
         return this.turn;
     }
 
-    public List<Card> getGuess(){
+    public List<Card> getGuess() {
         return this.guesses;
     }
 
@@ -218,40 +284,50 @@ public class Player extends Move implements Cloneable {
         return this.hand;
     }
 
-    public void addGuess(Card c){
-        this.guesses.add(c);
+    public boolean getHasWon() {
+        return hasWon;
     }
 
-    public void clearGuess(){
-        this.guesses.clear();
+    public String getName() {
+        return this.name;
     }
 
-    public void addHand(Card card) {
-        this.hand.add(card);
+    public int getSteps() {
+        return this.steps;
     }
 
-    public void removeHand(Card card) {
-        this.hand.remove(card);
+    public void setIsout(boolean b) {
+        isOut = b;
     }
 
+    public boolean getIsOut() {
+        return isOut;
+    }
+
+    public boolean getRollStatus() {
+        return rollStatus;
+    }
+
+    public void setRollStatus(boolean b) {
+        rollStatus = b;
+    }
+
+    public boolean getGuessStatus() {
+        return hasGuessed;
+    }
+
+    public void setGuessStatus(boolean b) {
+        hasGuessed = b;
+    }
+
+    /**
+     * toString method for getting the player initial two letters of there name
+     *
+     * @return
+     */
+    @Override
     public String toString() {
-        return super.toString() + "[" + "turn" + ":" + getTurn() + "]";
+        return name.substring(0, 2);
     }
 
-    public int getRow() {
-        return row;
-    }
-
-    public int getCol() {
-        return col;
-    }
-
-    public boolean checkVisited(Cell c){
-        if(visited.contains(c)){
-            return false;
-        }
-        return true;
-    }
-
-    public void clearVisited() { visited.clear(); }
 }
