@@ -256,6 +256,10 @@ public class Player extends Move implements Cloneable {
         this.hand.add(card);
     }
 
+    /**
+     * Clear visited cells for when a player has finished there turn
+     */
+    public void clearVisited() { visited.clear(); }
 
     /*
      * Getter and setters for this player object
