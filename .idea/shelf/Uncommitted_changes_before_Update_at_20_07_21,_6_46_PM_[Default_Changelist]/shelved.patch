@@ -1,0 +1,385 @@
+Index: src/Board.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import Cells.*;\n\nimport java.util.*;\n\npublic class Board {\n\n\n    Cell[][] cells;\n\n    // @formatter:off\n    String boardCells =\n            \"|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\\n\" +\n            \"|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\\n\" +\n            \"|__|__|HH|HH|HH|HH|HH|__|__|__|__|__|__|__|__|__|__|MM|MM|MM|MM|MM|__|__|\\n\" +\n            \"|__|__|HH|HH|HH|HH|HD|__|__|__|__|__|__|__|__|__|__|MM|MM|MM|MM|MM|__|__|\\n\" +\n            \"|__|__|HH|HH|HH|HH|HH|__|__|__|__|__|__|__|__|__|__|MM|MM|MM|MM|MM|__|__|\\n\" +\n            \"|__|__|HH|HH|HH|HH|HH|__|__|__|__|GC|GC|__|__|__|__|MD|MM|MM|MM|MM|__|__|\\n\" +\n            \"|__|__|HH|HH|HH|HD|HH|__|__|__|__|GC|GC|__|__|__|__|MM|MM|MM|MD|MM|__|__|\\n\" +\n            \"|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\\n\" +\n            \"|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\\n\" +\n            \"|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\\n\" +\n            \"|__|__|__|__|__|__|__|__|__|VC|VC|VC|VD|VC|VC|__|__|__|__|__|__|__|__|__|\\n\" +\n            \"|__|__|__|__|__|GC|GC|__|__|VC|VC|VC|VC|VC|VD|__|__|GC|GC|__|__|__|__|__|\\n\" +\n            \"|__|__|__|__|__|GC|GC|__|__|VD|VC|VC|VC|VC|VC|__|__|GC|GC|__|__|__|__|__|\\n\" +\n            \"|__|__|__|__|__|__|__|__|__|VC|VC|VD|VC|VC|VC|__|__|__|__|__|__|__|__|__|\\n\" +\n            \"|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\\n\" +\n            \"|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\\n\" +\n            \"|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\\n\" +\n            \"|__|__|CC|CD|CC|CC|CC|__|__|__|__|GC|GC|__|__|__|__|PP|PD|PP|PP|PP|__|__|\\n\" +\n            \"|__|__|CC|CC|CC|CC|CD|__|__|__|__|GC|GC|__|__|__|__|PP|PP|PP|PP|PP|__|__|\\n\" +\n            \"|__|__|CC|CC|CC|CC|CC|__|__|__|__|__|__|__|__|__|__|PP|PP|PP|PP|PP|__|__|\\n\" +\n            \"|__|__|CC|CC|CC|CC|CC|__|__|__|__|__|__|__|__|__|__|PD|PP|PP|PP|PP|__|__|\\n\" +\n            \"|__|__|CC|CC|CC|CC|CC|__|__|__|__|__|__|__|__|__|__|PP|PP|PP|PP|PP|__|__|\\n\" +\n            \"|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\\n\" +\n            \"|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\\n\";\n    // @formatter:on\n\n    private final List<Player> players;\n    private final List<Estate> estates;\n    private final List<Weapon> weapons;\n\n    public Board(int width, int height){\n        cells = new Cell[width][height];\n\n        players = new ArrayList<>();\n        estates = new ArrayList<>();\n        weapons = new ArrayList<>();\n    }\n\n\n    public List<Player> getPlayers() {\n        return this.players;\n    }\n\n    public List<Estate> getEstates() {\n        return this.estates;\n    }\n\n    public List<Weapon> getWeapons() {\n        return this.weapons;\n    }\n\n\n    public void removePlayer(Player aPlayer) {\n        this.players.remove(aPlayer);\n    }\n\n    public void addEstate(Estate aEstate) {\n        this.estates.add(aEstate);\n    }\n\n    public void removeEstate(Estate aEstate) {\n        this.estates.remove(aEstate);\n    }\n\n    public void addWeapon(Weapon aWeapon) {\n        this.weapons.add(aWeapon);\n    }\n\n    public void removeWeapon(Weapon aWeapon) {\n        this.weapons.remove(aWeapon);\n    }\n\n    public void delete() {\n        players.clear();\n        estates.clear();\n        weapons.clear();\n    }\n\n    public void apply(Move m) {\n\n    }\n\n    public void randomWeapRooms() {\n\n    }\n\n\n    public void setup() {\n\n        Scanner sc = new Scanner(boardCells).useDelimiter(\"\\\\|\");\n\n        int row = 0;\n        int col = 0;\n\n        while(sc.hasNext()){\n\n            switch(sc.next()) {\n                case \"__\":\n                    cells[row][col++] = new FreeCell();\n                    break;\n                case \"GC\":\n                    cells[row][col++] = new GreyCell();\n                    break;\n                case \"CC\":\n                    cells[row][col++] = new EstateCell(\"Calamity\", \"Castle\", false);\n                    break;\n                case \"CD\":\n                    cells[row][col++] = new EstateCell(\"Calamity\", \"Door\", true);\n                    break;\n                case \"PP\":\n                    cells[row][col++] = new EstateCell(\"Peril\", \"Palace\", false);\n                    break;\n                case \"PD\":\n                    cells[row][col++] = new EstateCell(\"Peril\", \"Door\", true);\n                    break;\n                case \"MM\":\n                    cells[row][col++] = new EstateCell(\"Manic\", \"Manor\", false);\n                    break;\n                case \"MD\":\n                    cells[row][col++] = new EstateCell(\"Manic\", \"Door\", true);\n                    break;\n                case \"HH\":\n                    cells[row][col++] = new EstateCell(\"Haunted\", \"House\", false);\n                    break;\n                case \"HD\":\n                    cells[row][col++] = new EstateCell(\"Haunted\", \"Door\", true);\n                    break;\n                case \"VC\":\n                    cells[row][col++] = new EstateCell(\"Villa\", \"Celia\", false);\n                    break;\n                case \"VD\":\n                    cells[row][col++] = new EstateCell(\"Villa\", \"Door\", true);\n                    break;\n                default:\n                    row++;\n                    col = 0;\n            }\n        }\n    }\n\n    public void setPlayer(Player p){\n        cells[p.getRow()][p.getCol()] = new PlayerCell(p.getName());\n    }\n\n\n    @Override\n    public String toString() {\n\n        StringBuilder sb = new StringBuilder();\n        for(Cell[] c1 : cells) {\n\n            for(Cell c2 : c1){\n                sb.append(\"|\");\n                sb.append(c2.toString());\n            }\n            sb.append(\"|\");\n            sb.append(\"\\n\");\n        }\n        return sb.toString();\n    }\n\n    public Cell[][] getCells(){\n        return cells;\n    }\n\n    public void setCells(Cell[][] cells){\n        this.cells = cells;\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Board.java b/src/Board.java
+--- a/src/Board.java	(revision 4784c439034e89d9b2a38bc65c8fdc51c180c3f7)
++++ b/src/Board.java	(date 1626697192458)
+@@ -4,6 +4,8 @@
+ 
+ public class Board {
+ 
++    Map<String, Estate> estates = new HashMap<>();
++
+ 
+     Cell[][] cells;
+ 
+@@ -35,66 +37,15 @@
+             "|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|\n";
+     // @formatter:on
+ 
+-    private final List<Player> players;
+-    private final List<Estate> estates;
+-    private final List<Weapon> weapons;
+ 
+     public Board(int width, int height){
+         cells = new Cell[width][height];
+-
+-        players = new ArrayList<>();
+-        estates = new ArrayList<>();
+-        weapons = new ArrayList<>();
+-    }
+-
+-
+-    public List<Player> getPlayers() {
+-        return this.players;
+-    }
+-
+-    public List<Estate> getEstates() {
+-        return this.estates;
+-    }
+-
+-    public List<Weapon> getWeapons() {
+-        return this.weapons;
+-    }
+-
+-
+-    public void removePlayer(Player aPlayer) {
+-        this.players.remove(aPlayer);
++        estates.put("HH", new Estate("Haunted House"));
++        estates.put("MM", new Estate("Mani Manor"));
++        estates.put("PP", new Estate("Peril Palace"));
++        estates.put("CC", new Estate("Calamity Castle"));
++        estates.put("VC", new Estate("Vila Celia"));
+     }
+-
+-    public void addEstate(Estate aEstate) {
+-        this.estates.add(aEstate);
+-    }
+-
+-    public void removeEstate(Estate aEstate) {
+-        this.estates.remove(aEstate);
+-    }
+-
+-    public void addWeapon(Weapon aWeapon) {
+-        this.weapons.add(aWeapon);
+-    }
+-
+-    public void removeWeapon(Weapon aWeapon) {
+-        this.weapons.remove(aWeapon);
+-    }
+-
+-    public void delete() {
+-        players.clear();
+-        estates.clear();
+-        weapons.clear();
+-    }
+-
+-    public void apply(Move m) {
+-
+-    }
+-
+-    public void randomWeapRooms() {
+-
+-    }
+-
+ 
+     public void setup() {
+ 
+@@ -113,34 +64,64 @@
+                     cells[row][col++] = new GreyCell();
+                     break;
+                 case "CC":
+-                    cells[row][col++] = new EstateCell("Calamity", "Castle", false);
++                    EstateCell cc = new EstateCell("Calamity", "Castle", false);
++
++                    cells[row][col++] = cc;
++                    estates.get("CC").addCell(cc);
+                     break;
+                 case "CD":
+-                    cells[row][col++] = new EstateCell("Calamity", "Door", true);
++                    EstateCell cd = new EstateCell("Calamity", "Door", true);
++
++                    cells[row][col++] = cd;
++                    estates.get("CC").addCell(cd);
+                     break;
+                 case "PP":
+-                    cells[row][col++] = new EstateCell("Peril", "Palace", false);
++                    EstateCell pp = new EstateCell("Peril", "Palace", false);
++
++                    cells[row][col++] = pp;
++                    estates.get("PP").addCell(pp);
+                     break;
+                 case "PD":
+-                    cells[row][col++] = new EstateCell("Peril", "Door", true);
++                    EstateCell pd = new EstateCell("Peril", "Door", true);
++
++                    cells[row][col++] = pd;
++                    estates.get("PP").addCell(pd);
+                     break;
+                 case "MM":
+-                    cells[row][col++] = new EstateCell("Manic", "Manor", false);
++                    EstateCell mm = new EstateCell("Manic", "Manor", false);
++
++                    cells[row][col++] = mm;
++                    estates.get("MM").addCell(mm);
+                     break;
+                 case "MD":
+-                    cells[row][col++] = new EstateCell("Manic", "Door", true);
++                    EstateCell md = new EstateCell("Manic", "Door", true);
++
++                    cells[row][col++] = md;
++                    estates.get("MM").addCell(md);
+                     break;
+                 case "HH":
+-                    cells[row][col++] = new EstateCell("Haunted", "House", false);
++                    EstateCell hh = new EstateCell("Haunted", "House", false);
++
++                    cells[row][col++] = hh;
++                    estates.get("HH").addCell(hh);
+                     break;
+                 case "HD":
+-                    cells[row][col++] = new EstateCell("Haunted", "Door", true);
++                    EstateCell hd = new EstateCell("Haunted", "Door", true);
++
++                    cells[row][col++] = hd;
++                    estates.get("HH").addCell(hd);
+                     break;
+                 case "VC":
+-                    cells[row][col++] = new EstateCell("Villa", "Celia", false);
++                    EstateCell vc = new EstateCell("Villa", "Celia", false);
++
++                    cells[row][col++] = vc;
++                    estates.get("VC").addCell(vc);
+                     break;
+                 case "VD":
+-                    cells[row][col++] = new EstateCell("Villa", "Door", true);
++                    EstateCell vd = new EstateCell("Villa", "Door", true);
++
++                    cells[row][col++] = vd;
++                    estates.get("VC").addCell(vd);
+                     break;
+                 default:
+                     row++;
+@@ -153,6 +134,10 @@
+         cells[p.getRow()][p.getCol()] = new PlayerCell(p.getName());
+     }
+ 
++    public Estate getEstate(String name){
++        return estates.get(name);
++    }
++
+ 
+     @Override
+     public String toString() {
+Index: src/Move.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>public abstract class Move {\n    //public abstract void apply(Board b);\n    public abstract boolean isValid(Board b, String direction);\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Move.java b/src/Move.java
+--- a/src/Move.java	(revision 4784c439034e89d9b2a38bc65c8fdc51c180c3f7)
++++ b/src/Move.java	(date 1626693692142)
+@@ -1,4 +1,5 @@
+ public abstract class Move {
+     //public abstract void apply(Board b);
+     public abstract boolean isValid(Board b, String direction);
++
+ }
+\ No newline at end of file
+Index: src/Estate.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import java.util.*;\n\npublic class Estate {\n    private List<Player> playersInEstate;\n\n    public Estate() {\n        playersInEstate = new ArrayList<>();\n    }\n\n    public List<Player> getPlayersInEstate() {\n        return this.playersInEstate;\n    }\n\n    public void addPlayersInEstate(Player aPlayerInEstate) {\n        this.playersInEstate.add(aPlayerInEstate);\n    }\n\n    public void removePlayersInEstate(Player aPlayerInEstate) {\n        this.playersInEstate.remove(aPlayerInEstate);\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Estate.java b/src/Estate.java
+--- a/src/Estate.java	(revision 4784c439034e89d9b2a38bc65c8fdc51c180c3f7)
++++ b/src/Estate.java	(date 1626745790858)
+@@ -1,10 +1,23 @@
++import Cells.Cell;
++import Cells.EstateCell;
++
+ import java.util.*;
+ 
+ public class Estate {
++    public String estateName;
++
+     private List<Player> playersInEstate;
+ 
+-    public Estate() {
++    List<EstateCell> estateCellList;
++
++    public Estate(String estateName) {
+         playersInEstate = new ArrayList<>();
++        this.estateName = estateName;
++        estateCellList = new ArrayList<EstateCell>();
++    }
++
++    public void addCell(EstateCell c){
++        this.estateCellList.add(c);
+     }
+ 
+     public List<Player> getPlayersInEstate() {
+@@ -18,4 +31,6 @@
+     public void removePlayersInEstate(Player aPlayerInEstate) {
+         this.playersInEstate.remove(aPlayerInEstate);
+     }
++
++
+ }
+\ No newline at end of file
+Index: src/Player.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import Cells.*;\n\nimport java.util.*;\nimport java.util.Random;\n\npublic class Player extends Move implements Cloneable {\n    private boolean turn = false;\n    private String name;\n\n    int row;\n    int col;\n\n    //private ArrayList<Cells.Cell> visited;\n    private Map<Integer, Integer> visited = new HashMap<>();\n\n    private Random dice1 = new Random();\n    private Random dice2 = new Random();\n\n    private int upperBound = 7;\n    private int steps = 0;\n    private boolean rollStatus = false;\n    private boolean isOut = false;\n\n    private ArrayList<Card> guesses;\n    private List<Card> hand;\n\n    public Player(String name, int row, int col) {\n        this.name = name;\n        this.row = row;\n        this.col = col;\n        hand = new ArrayList<>();\n        guesses = new ArrayList<>();\n    }\n\n    public String getName(){\n        return this.name;\n    }\n\n    public int getSteps(){\n        return this.steps;\n    }\n\n    public void roll(){\n        if(turn){\n            int d1 = dice1.nextInt(upperBound);\n            int d2 = dice2.nextInt(upperBound);\n            steps = d1+d2;\n            rollStatus = true;\n        }\n    }\n\n    public boolean getIsOut(){\n        return isOut;\n    }\n    public boolean getRollStatus(){\n        return rollStatus;\n    }\n\n\n    public void printHand(){\n        System.out.println(this.name +\"'s\" +\" current Hand: \");\n        for(int i = 0; i < hand.size(); i++){\n            System.out.println(i+\": \"+hand.get(i).name);\n        }\n    }\n\n    @Override\n    public Player clone(){\n        Player p = new Player(this.name, this.row, this.col);\n        for(Card c: this.hand){\n            p.hand.add(c.clone());\n        }\n        return p;\n    }\n\n    public void move(Board b, String direction){\n        if(isValid(b, direction)){\n            steps--;\n\n            Cell[][] cells = b.getCells();\n            PlayerCell playerCell = (PlayerCell) cells[row][col];\n            cells[row][col] = new FreeCell();\n\n            switch (direction){\n                case \"W\":\n                    cells[row - 1][col] = playerCell;\n                    row = row - 1;\n                    visited.put(row, col);\n                    b.setCells(cells);\n                    break;\n\n                case \"A\":\n                    cells[row][col - 1] = playerCell;\n                    col = col - 1;\n                    visited.put(row, col);\n                    b.setCells(cells);\n                    break;\n\n                case \"S\":\n                    cells[row + 1][col] = playerCell;\n                    row = row + 1;\n                    visited.put(row, col);\n                    b.setCells(cells);\n                    break;\n\n                case \"D\":\n                    cells[row][col + 1] = playerCell;\n                    col = col + 1;\n                    visited.put(row, col);\n                    b.setCells(cells);\n                    break;\n\n                default:\n                    break;\n            }\n        } else {\n            System.out.println(\"Move is not valid\");\n        }\n    }\n\n    @Override\n    public boolean isValid(Board b, String direction) {\n        Cell[][] cells = b.getCells();\n\n        switch (direction) {\n            case \"W\":\n                if(row > 0) {\n                    return cells[row - 1][col] instanceof FreeCell;\n                }\n\n            case \"A\":\n                if(col > 0) {\n                    return cells[row][col - 1] instanceof FreeCell;\n                }\n\n            case \"S\":\n                if(col < 24) {\n                    return cells[row][col + 1] instanceof FreeCell;\n                }\n\n            case \"D\":\n                if(row < 24) {\n                    return cells[row + 1][col] instanceof FreeCell;\n                }\n\n            default:\n                return false;\n        }\n    }\n\n    public void setTurn(boolean aTurn) {\n        this.turn = aTurn;\n    }\n\n    public boolean getTurn() {\n        return this.turn;\n    }\n\n    public List<Card> getGuess(){\n        return this.guesses;\n    }\n\n    public List<Card> getHand() {\n        return this.hand;\n    }\n\n    public void addGuess(Card c){\n        this.guesses.add(c);\n    }\n\n    public void clearGuess(){\n        this.guesses.clear();\n    }\n\n    public void addHand(Card card) {\n        this.hand.add(card);\n    }\n\n    public void removeHand(Card card) {\n        this.hand.remove(card);\n    }\n\n    public String toString() {\n        return super.toString() + \"[\" + \"turn\" + \":\" + getTurn() + \"]\";\n    }\n\n    public int getRow() {\n        return row;\n    }\n\n    public int getCol() {\n        return col;\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Player.java b/src/Player.java
+--- a/src/Player.java	(revision 4784c439034e89d9b2a38bc65c8fdc51c180c3f7)
++++ b/src/Player.java	(date 1626698074826)
+@@ -5,12 +5,13 @@
+ 
+ public class Player extends Move implements Cloneable {
+     private boolean turn = false;
++    private Estate isInEstate = null;
+     private String name;
+ 
+     int row;
+     int col;
+ 
+-    //private ArrayList<Cells.Cell> visited;
++
+     private Map<Integer, Integer> visited = new HashMap<>();
+ 
+     private Random dice1 = new Random();
+@@ -122,30 +123,49 @@
+     public boolean isValid(Board b, String direction) {
+         Cell[][] cells = b.getCells();
+ 
++        Cell toVisit = null;
++
+         switch (direction) {
+             case "W":
+                 if(row > 0) {
+-                    return cells[row - 1][col] instanceof FreeCell;
++                    toVisit = cells[row - 1][col];
++                } else {
++                    return false;
+                 }
+ 
+             case "A":
+                 if(col > 0) {
+-                    return cells[row][col - 1] instanceof FreeCell;
++                    toVisit = cells[row][col - 1];
++                } else {
++                    return false;
+                 }
+ 
+             case "S":
+-                if(col < 24) {
+-                    return cells[row][col + 1] instanceof FreeCell;
++                if(row < 23) {
++                    toVisit = cells[row + 1][col] ;
++                } else {
++                    return false;
+                 }
+ 
+             case "D":
+-                if(row < 24) {
+-                    return cells[row + 1][col] instanceof FreeCell;
++                if(col < 23) {
++                    toVisit = cells[row][col + 1];
++                } else {
++                    return false;
+                 }
+-
+-            default:
+-                return false;
+-        }
++        }
++        if(toVisit == null){
++            return false;
++        } else if(toVisit instanceof FreeCell){
++            return true;
++        } else if(toVisit instanceof EstateCell){
++            if(((EstateCell) toVisit).isDoor){
++                System.out.println(b.getEstate(toVisit.toString()));
++            } else {
++                return false;
++            }
++        }
++        return false;
+     }
+ 
+     public void setTurn(boolean aTurn) {
+Index: src/Cells/Cell.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package Cells;\n\npublic interface  Cell {\n\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Cells/Cell.java b/src/Cells/Cell.java
+--- a/src/Cells/Cell.java	(revision 4784c439034e89d9b2a38bc65c8fdc51c180c3f7)
++++ b/src/Cells/Cell.java	(date 1626696582320)
+@@ -2,4 +2,6 @@
+ 
+ public interface  Cell {
+ 
++
++
+ }
+Index: src/Cells/EstateCell.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package Cells;\n\npublic class EstateCell implements Cells.Cell {\n\n    public boolean isDoor;\n\n    String nameFirst;\n    String nameSecond;\n\n    public EstateCell(String name1, String name2, Boolean isDoor){\n        this.nameFirst = name1;\n        this.nameSecond = name2;\n        this.isDoor = isDoor;\n    }\n\n\n    @Override\n    public String toString() {\n        return nameFirst.substring(0, 1) + nameSecond.substring(0, 1);\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Cells/EstateCell.java b/src/Cells/EstateCell.java
+--- a/src/Cells/EstateCell.java	(revision 4784c439034e89d9b2a38bc65c8fdc51c180c3f7)
++++ b/src/Cells/EstateCell.java	(date 1626696669437)
+@@ -1,6 +1,8 @@
+ package Cells;
+ 
+-public class EstateCell implements Cells.Cell {
++
++
++public class EstateCell implements Cells.Cell{
+ 
+     public boolean isDoor;
+ 
+@@ -11,8 +13,8 @@
+         this.nameFirst = name1;
+         this.nameSecond = name2;
+         this.isDoor = isDoor;
+-    }
+ 
++    }
+ 
+     @Override
+     public String toString() {
+Index: src/EstateCard.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>public class EstateCard extends Card {\n\n    public EstateCard(String name) {\n        super(name);\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/EstateCard.java b/src/EstateCard.java
+--- a/src/EstateCard.java	(revision 4784c439034e89d9b2a38bc65c8fdc51c180c3f7)
++++ b/src/EstateCard.java	(date 1626695582069)
+@@ -1,4 +1,4 @@
+-public class EstateCard extends Card {
++public class EstateCard extends Card{
+ 
+     public EstateCard(String name) {
+         super(name);
