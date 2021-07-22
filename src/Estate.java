@@ -1,6 +1,7 @@
 import Cells.Cell;
 import Cells.EstateCell;
 import Cells.PlayerCell;
+import Cells.WeaponCell;
 
 import java.util.*;
 
@@ -10,11 +11,11 @@ import java.util.*;
 public class Estate {
     private String estateName;
     private List<Player> playersInEstate;
+    private List<Weapon> weaponsInEstate;
     private List<Cell> estateCellList;
     private List<PlayerCell> pcInEstate;
     private List<Integer> availableCells;
     private Map<String, Cell> exitCells;
-
 
     public Estate(String estateName, List<Integer> availableCells) {
         this.playersInEstate = new ArrayList<>();
@@ -27,7 +28,7 @@ public class Estate {
     }
 
     /**
-     * Add a cell that makes up the estate on the baord
+     * Add a cell that makes up the estate on the board
      *
      * @param c the cell to add to the arraylist of estate cells
      */
@@ -110,5 +111,24 @@ public class Estate {
 
     public String getEstateName(){
         return estateName;
+    }
+
+    /*public void addWeaponInEstate(Weapon aWeapon, WeaponCell wc){
+        Cell c = null;
+
+        while(c instanceof EstateCell == false){
+            c = estateCellList.remove((int) ((Math.random() * estateCellList.size())));
+            wc.setCoords(c.getCol(), c.getRow());
+        }
+        estateCellList.add(wc);
+        this.weaponsInEstate.add(aWeapon);
+    }*/
+
+    public List<Weapon> getWeaponsInEstate(){
+        return this.weaponsInEstate;
+    }
+
+    public void removeWeaponInEstate(Weapon aWeapon){
+        this.weaponsInEstate.remove(aWeapon);
     }
 }

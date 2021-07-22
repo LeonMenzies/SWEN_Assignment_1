@@ -1,5 +1,4 @@
 import Cells.*;
-
 import java.util.*;
 import java.util.Random;
 
