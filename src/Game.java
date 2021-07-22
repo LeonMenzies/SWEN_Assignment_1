@@ -377,18 +377,19 @@ public class Game {
                 cardE = in.substring(2, 3);
                 cardW = in.substring(4, 5);
 
-            }
-            //need to check that the strings input are actually numbers
-            if (isNumeric(cardC) && isNumeric(cardE) && isNumeric(cardW)) {
-                i = Integer.parseInt(cardC);
-                j = Integer.parseInt(cardE);
-                k = Integer.parseInt(cardW);
-                //cards are in order from character to estate to weapon so if one of the numbers is out means player grabbed two or more of one type
-                if (i > 3 || j != 4 || (k < 5 || k > 9)) {
-                    System.out.println("Please pick one of each card");
 
-                } else {
-                    break;
+                //need to check that the strings input are actually numbers
+                if (isNumeric(cardC) && isNumeric(cardE) && isNumeric(cardW)) {
+                    i = Integer.parseInt(cardC);
+                    j = Integer.parseInt(cardE);
+                    k = Integer.parseInt(cardW);
+                    //cards are in order from character to estate to weapon so if one of the numbers is out means player grabbed two or more of one type
+                    if (i > 3 || j != 4 || (k < 5 || k > 9)) {
+                        System.out.println("Please pick one of each card");
+
+                    } else {
+                        break;
+                    }
                 }
             }
 
