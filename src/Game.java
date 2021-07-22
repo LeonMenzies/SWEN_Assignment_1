@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 
 public class Game {
     ArrayList<Player> players = new ArrayList<>();
+    ArrayList<Weapon> weapons = new ArrayList<>();
     ArrayList<Player> tempPlayers = new ArrayList<>();
     ArrayList<Card> deck = new ArrayList<>();
     ArrayList<Card> tempDeck = new ArrayList<>();
@@ -28,6 +29,7 @@ public class Game {
         board = new Board(24, 24);
         board.setup();
         game.playerSetUp();
+        game.weaponSetup();
         game.setUpDeck();
         game.generateMurder();
         game.dealCards();
@@ -523,6 +525,23 @@ public class Game {
             board.setPlayer(p);
         }
 
+    }
+
+    public void weaponSetup(){
+        weapons.add(new Weapon("Broom", 0, 0));
+        weapons.add(new Weapon("Scissors", 0, 0));
+        weapons.add(new Weapon("Knife", 0, 0));
+        weapons.add(new Weapon("Shovel", 0, 0));
+        weapons.add(new Weapon("iPad", 0, 0));
+
+        Collections.shuffle(weapons);
+
+        int count = 0;
+        for(Map.Entry<String, Estate> e : board.getEstates().entrySet()){
+            e.getValue().addWeaponInEstate(weapons.get(count));
+            count++;
+        }
+        board.redrawEstates();
     }
 
     /**

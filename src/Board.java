@@ -48,7 +48,7 @@ public class Board {
         estates.put("Manic Door", new Estate("Manic Manor", new ArrayList<>(Arrays.asList(5, 6, 7, 10, 11, 12, 15, 16, 17))));
         estates.put("Peril Door", new Estate("Peril Palace", new ArrayList<>(Arrays.asList(5, 6, 7, 10, 11, 12, 15, 16, 17))));
         estates.put("Calamity Door", new Estate("Calamity Castle", new ArrayList<>(Arrays.asList(5, 6, 7, 10, 11, 12, 15, 16, 17))));
-        estates.put("Villa Door", new Estate("Villa Celia", new ArrayList<>(Arrays.asList(6, 7, 8, 9, 12, 13, 14, 15))));
+        estates.put("Villa Door", new Estate("Villa Celia", new ArrayList<>(Arrays.asList(6, 7, 8, 9, 12, 13, 14, 15, 16))));
     }
 
     /**
@@ -56,6 +56,7 @@ public class Board {
      */
     public void redrawEstates(){
         for(Map.Entry<String, Estate> mp : estates.entrySet()){
+            System.out.println("Weapons: " + mp.getValue().getWeaponsInEstate());
             mp.getValue().redrawEstate(this);
         }
     }
@@ -207,6 +208,10 @@ public class Board {
 
     public Cell getCell(int row, int col){
         return cells[row][col];
+    }
+
+    public Map<String, Estate> getEstates(){
+        return estates;
     }
 
 

@@ -7,7 +7,7 @@ public class Weapon extends Move {
     int col;
 
     public Weapon(String name, int row, int col) {
-        super();
+        super(row, col);
         this.wepName = name;
         this.row = row;
         this.col = col;

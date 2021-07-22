@@ -10,10 +10,10 @@ import java.util.*;
  */
 public class Estate {
     private String estateName;
-    private List<Player> playersInEstate;
     private List<Weapon> weaponsInEstate;
+    private List<Player> playersInEstate;
     private List<Cell> estateCellList;
-    private List<PlayerCell> pcInEstate;
+    private List<Cell> cellObjectsInEstate;
     private List<Integer> availableCells;
     private Map<String, Cell> exitCells;
 
@@ -23,8 +23,9 @@ public class Estate {
         this.estateCellList = new ArrayList<>();
         this.exitCells = new HashMap<>();
         this.playersInEstate = new ArrayList<>();
-        this.pcInEstate = new ArrayList<>();
+        this.cellObjectsInEstate = new ArrayList<>();
         this.availableCells = availableCells;
+        this.weaponsInEstate = new ArrayList<>();
     }
 
     /**
@@ -49,10 +50,12 @@ public class Estate {
         }
 
         //Special method for picking the right location to redraw the players in the estate
-        for (PlayerCell pc : pcInEstate) {
+        for (Cell pc : cellObjectsInEstate) {
             b.redrawCell(estateCellList.get(getCell).getRow(), estateCellList.get(getCell).getCol(), pc);
         }
     }
+
+
 
     /**
      * Add exit cells so weh a player exits the estate knows where to put the player
@@ -67,12 +70,18 @@ public class Estate {
     /**
      * Add a player object to this estate asw ell as the player cell for drawing
      *
-     * @param aPlayerInEstate the player object to be added
+     * @param pl the player object to be added
      * @param pc              the Cell for redrawing in the board
      */
-    public void addPlayersInEstate(Player aPlayerInEstate, PlayerCell pc) {
-        this.pcInEstate.add(pc);
-        this.playersInEstate.add(aPlayerInEstate);
+    public void addPlayersInEstate(Player pl, PlayerCell pc) {
+        this.cellObjectsInEstate.add(pc);
+        this.playersInEstate.add(pl);
+    }
+
+    public void addWeaponInEstate(Weapon wp){
+        this.weaponsInEstate.add(wp);
+        this.cellObjectsInEstate.add(new WeaponCell(0, 0, wp.getWepName()));
+
     }
 
     /**
@@ -99,30 +108,19 @@ public class Estate {
         Cell toRemove = null;
 
         //Find the player in the list of estate cells and remove it
-        for (Cell c : pcInEstate) {
+        for (Cell c : cellObjectsInEstate) {
             if (c.toString().equals(aPlayerInEstate.toString())) {
                 toRemove = c;
             }
         }
         if (toRemove != null) {
-            this.pcInEstate.remove(toRemove);
+            this.cellObjectsInEstate.remove(toRemove);
         }
     }
 
     public String getEstateName(){
         return estateName;
     }
-
-    /*public void addWeaponInEstate(Weapon aWeapon, WeaponCell wc){
-        Cell c = null;
-
-        while(c instanceof EstateCell == false){
-            c = estateCellList.remove((int) ((Math.random() * estateCellList.size())));
-            wc.setCoords(c.getCol(), c.getRow());
-        }
-        estateCellList.add(wc);
-        this.weaponsInEstate.add(aWeapon);
-    }*/
 
     public List<Weapon> getWeaponsInEstate(){
         return this.weaponsInEstate;

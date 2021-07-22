@@ -26,6 +26,7 @@ public class Player extends Move implements Cloneable {
     private List<Cell> visited;
 
     public Player(String name, int row, int col) {
+        super(row, col);
         this.name = name;
         this.row = row;
         this.col = col;
