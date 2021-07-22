@@ -88,7 +88,7 @@ public class Game {
      */
 
     public boolean playersTurn(Player p) {
-        System.out.println(p.getEstateIn());
+
         Scanner input = new Scanner(System.in);
         String in;
         while (true) {
@@ -113,7 +113,8 @@ public class Game {
                 System.out.println("H(Show Hand), G(guess), F(Final Guess), E(END TURN) or WASD(Move)");
             }
 
-            in = input.next();
+            in = input.next().toUpperCase();
+
             in = checkInput(in);
 
             //rolls the dice for the player and makes so they cant roll again
@@ -160,10 +161,10 @@ public class Game {
                     System.out.println(i + ": " + refuteCards.get(i).getName());
                 }
 
-            } else if (in.equals("G") && p.getGuessStatus()) {
+            } else if (in.equals("G") && p.getGuessStatus() && !p.getEstateIn().equals("null")) {
                 System.out.println("You have already guessed");
 
-            } else {
+            } else if(in.equals("G") && !p.getGuessStatus() && p.getEstateIn().equals("null") ) {
                 System.out.println("You need to be in an estate to make a guess");
             }
 
@@ -181,7 +182,7 @@ public class Game {
                     System.out.println("You are out " + p.getName() + " you can't guess or move but can still refute");
                 }
                 return false;
-            } else {
+            } else if(in.equals("F") && !p.getGuessStatus() && p.getEstateIn().equals("null")){
                 System.out.println("You must be in an estate to make a final guess");
             }
 
@@ -359,9 +360,9 @@ public class Game {
         int i;
         int j;
         int k;
-        String cardC = " ";
-        String cardE = " ";
-        String cardW = " ";
+        String cardC;
+        String cardE;
+        String cardW;
         while (true) {
             Scanner input = new Scanner(System.in);
             String in;
@@ -478,7 +479,7 @@ public class Game {
             //length greater then one cant be a correct character entered
             if (in.length() > 1) {
                 System.out.println("Please enter a Valid Move");
-                in = input.next();
+                in = input.next().toUpperCase();
             }
             //checks to see if input matches pattern if true returns that string
             Matcher matcher = MovePat.matcher(in);
@@ -488,7 +489,7 @@ public class Game {
                 return in;
             } else {
                 System.out.println("Please enter a Valid Move");
-                in = input.next();
+                in = input.next().toUpperCase();
 
             }
         }
