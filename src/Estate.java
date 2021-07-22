@@ -107,4 +107,8 @@ public class Estate {
             this.pcInEstate.remove(toRemove);
         }
     }
+
+    public String getEstateName(){
+        return estateName;
+    }
 }

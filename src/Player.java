@@ -324,6 +324,13 @@ public class Player extends Move implements Cloneable {
         hasGuessed = b;
     }
 
+    public String getEstateIn(){
+        if(estateIn == null){
+            return "null";
+        }
+        return estateIn.getEstateName();
+    }
+
     /**
      * toString method for getting the player initial two letters of there name
      *
@@ -331,6 +338,7 @@ public class Player extends Move implements Cloneable {
      */
     @Override
     public String toString() {
+
         return name.substring(0, 2);
     }
 

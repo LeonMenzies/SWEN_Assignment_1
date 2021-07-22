@@ -31,10 +31,15 @@ public class Game {
         game.setUpDeck();
         game.generateMurder();
         game.dealCards();
-        game.playGame(board);
+        game.playGame();
     }
 
-    public void playGame(Board board) {
+
+    /**
+     * Starts the game and decides the order in which the plays will start
+     * Game goes until someone has won or all the players are out
+     */
+    public void playGame() {
 
         //gets at the random who is going to start the game
         Random rand = new Random();
@@ -64,7 +69,7 @@ public class Game {
             }
 
         }
-        //either winner is displayer or no one won
+        //either winner is displayed or no one won
         if (gameWon) {
             System.out.println("The winner is " + winner.getName() + "!");
 
@@ -77,13 +82,16 @@ public class Game {
 
     /**
      * Allows the player to play game via a serious of inputs into the console
+     *
+     * @param p current player
+     * @return true of false if the player has won
      */
 
     public boolean playersTurn(Player p) {
-
+        System.out.println(p.getEstateIn());
         Scanner input = new Scanner(System.in);
         String in;
-        while(true) {
+        while (true) {
             //sets up the player for there turn clears all the variables from last turn
             if (!p.getTurn()) {
                 System.out.print("It is " + p.getName() + "'s turn please make sure they have the tablet and enter any key to continue: ");
@@ -136,7 +144,8 @@ public class Game {
 
             //set so player cant make another guess this turn, gets the order the following players will make a guess
             //adds the cards to the refute list, clears the screen then displays the refute cards for the player
-            if (in.equals("G") && !p.getGuessStatus()) {
+            //also checks to see if the play is in an estate
+            if (in.equals("G") && !p.getGuessStatus() && !p.getEstateIn().equals("null")) {
                 p.setGuessStatus(true);
                 refuteOrder(p);
                 makeGuess(p);
@@ -154,11 +163,14 @@ public class Game {
             } else if (in.equals("G") && p.getGuessStatus()) {
                 System.out.println("You have already guessed");
 
+            } else {
+                System.out.println("You need to be in an estate to make a guess");
             }
 
-            //player makes a guess then the cards a checked againest the circumstance
+            //player makes a guess then the cards a checked against the circumstance
             //if player is successful they have won otherwise they are out
-            if (in.equals("F") && !p.getGuessStatus()) {
+            //also checks to see if the player is in a estate
+            if (in.equals("F") && !p.getGuessStatus() && !p.getEstateIn().equals("null")) {
                 makeGuess(p);
                 p.setHasWon(checkWin(p.getGuess()));
                 if (p.getHasWon()) {
@@ -169,13 +181,17 @@ public class Game {
                     System.out.println("You are out " + p.getName() + " you can't guess or move but can still refute");
                 }
                 return false;
+            } else {
+                System.out.println("You must be in an estate to make a final guess");
             }
 
             //ends the plays turn
-            if (in.equals("E")) {
+            if (in.equals("E") && (p.getSteps() == 0 || !p.getEstateIn().equals("null"))) {
                 p.setTurn(false);
                 clearScreen();
                 return false;
+            } else {
+                System.out.println("You must be in an estate or out of steps to end your turn");
             }
         }
 
@@ -183,11 +199,14 @@ public class Game {
 
     /**
      * Player is making final guess checks to see if they have won or not
+     *
+     * @param guess list of the current guess
+     * @return true or false if all the cards match
      */
 
     public boolean checkWin(List<Card> guess) {
         int count = 0;
-        //goes through the circumstance and compares them to the players guess if count equals 3 then all cards matached
+        //goes through the circumstance and compares them to the players guess if count equals 3 then all cards matched
         for (Card c : circumstance) {
             for (Card c1 : guess) {
                 if (c.getName().equals(c1.getName())) {
@@ -201,6 +220,8 @@ public class Game {
 
     /**
      * Goes through all the players aside from the guesser and checks if they can refute
+     *
+     * @param guess list of the current guess
      */
     public void refute(List<Card> guess) {
         //goes through the list of players in the correct refute order displaying the current guess cards
@@ -210,7 +231,7 @@ public class Game {
                 System.out.print(c.getName() + " ");
             }
             System.out.println();
-            while(true) {
+            while (true) {
                 //prints out who's turn it is to refute and there cards
                 Scanner input = new Scanner(System.in);
                 System.out.println("It is " + tempPlayers.get(i).getName() + "'s time to make a refute ");
@@ -226,16 +247,16 @@ public class Game {
 
                     }
                     //following ifs check if they can refute or if the refute is legit
-                   else if (j == 4) {
+                    else if (j == 4) {
                         boolean check = checkRefute(guess, tempPlayers.get(i).getHand());
                         if (check) {
                             System.out.println("You can refute please try again");
 
-                        }else{
+                        } else {
                             break;
                         }
                     } else {
-                       //pulls the card and checks it is a refute
+                        //pulls the card and checks it is a refute
                         Card r = tempPlayers.get(i).getHand().get(j);
                         boolean isRefute = isARefute(guess, r);
                         //if refute is legit card is added to one to show player making the guess
@@ -264,6 +285,10 @@ public class Game {
 
     /**
      * Checks to see if the card refute is a legit refute
+     *
+     * @param guess list of the current guess
+     * @param c     the card the player is putting in as the refute
+     * @return true or false if the the card is an actual refute or not
      */
     public boolean isARefute(List<Card> guess, Card c) {
         //compares all the guess to the suggested card
@@ -277,6 +302,10 @@ public class Game {
 
     /**
      * Checks to see if player is telling truth when saying cant refute
+     *
+     * @param guess list of the current guess
+     * @param hand  list of the players hand
+     * @return true or false if the play can refute or not
      */
     public boolean checkRefute(List<Card> guess, List<Card> hand) {
         //compares all the cards in the guess to the players hand
@@ -292,6 +321,9 @@ public class Game {
 
     /**
      * Checks to see if a String is an int
+     *
+     * @param str String to be checked
+     * @return true or false if can be parsed as int or not
      */
     public boolean isNumeric(String str) {
         try {
@@ -304,16 +336,26 @@ public class Game {
 
     /**
      * Allows the play to make a guess of one of each card, the estate being the estate they are currently in
+     *
+     * @param p player making the guess
      */
 
     public void makeGuess(Player p) {
+
         //clears the current players guess array and prints all the cards in the deck for them
         p.clearGuess();
-        for (int i = 0; i < tempDeck.size(); i++) {
-            System.out.println(i + ": " + tempDeck.get(i).name);
+        int count = 0;
+        for (Card c : tempDeck) {
+            if (c instanceof EstateCard) {
+                if (!c.getName().equals(p.getEstateIn())) {
+                    continue;
+                }
+            }
+            System.out.println(count + ": " + c.getName());
+            count++;
         }
 
-        //int and strings requried for selecting the right cards from the deck
+        //int and strings required for selecting the right cards from the deck
         int i;
         int j;
         int k;
@@ -323,31 +365,26 @@ public class Game {
         while (true) {
             Scanner input = new Scanner(System.in);
             String in;
-            System.out.println("Please select 3 cards as your guess eg 1,5,10");
+            System.out.println("Please select 3 cards as your guess eg 1,4,9");
             in = input.next();
 
-            if (in.length() < 5 || in.length() > 6) {
+            if (in.length() != 5) {
                 System.out.println("Please select three cards");
 
             } else {
                 //brings the input into substrings of the correct numbers
                 cardC = in.substring(0, 1);
                 cardE = in.substring(2, 3);
+                cardW = in.substring(4, 5);
 
-                //last digit could be either singular or double so need to check for that
-                if (in.length() == 6) {
-                    cardW = in.substring(4, 6);
-                } else {
-                    cardW = in.substring(4, 5);
-                }
             }
             //need to check that the strings input are actually numbers
             if (isNumeric(cardC) && isNumeric(cardE) && isNumeric(cardW)) {
                 i = Integer.parseInt(cardC);
                 j = Integer.parseInt(cardE);
                 k = Integer.parseInt(cardW);
-                //cards are in order from character to estatae to weapon so if one of the variables means player grabbed two or more of one type
-                if (i > 3 || (j < 4 || j > 8) || (k < 9 || k > 13)) {
+                //cards are in order from character to estate to weapon so if one of the numbers is out means player grabbed two or more of one type
+                if (i > 3 || j != 4 || (k < 5 || k > 9)) {
                     System.out.println("Please pick one of each card");
 
                 } else {
@@ -355,12 +392,6 @@ public class Game {
                 }
             }
 
-
-            //implement once we figure out how to check if they are in an estate
-//        if(gWhere.getName() != player.getEstateName()){
-//            System.out.println("Please pick the estate you are currently in");
-//            makeGuess(p);
-//        }
 
         }
         //generates the three cards of each type that the play is guessing
@@ -377,9 +408,11 @@ public class Game {
 
     /**
      * Make sure the order to refute is correct depending on who is making the guess
+     *
+     * @param p player making the guess
      */
     public void refuteOrder(Player p) {
-        //clears previous order and clones the players in there orginal order into the array putting aside the player
+        //clears previous order and clones the players in there original order into the array putting aside the player
         //who is making the guess
         tempPlayers.clear();
         Player guesser = null;
@@ -408,10 +441,12 @@ public class Game {
 
     /**
      * Generate starting order for the game randomly chosen start but still follow same order as refute goes in
+     *
+     * @param p starting player
      */
     public void generateStartingOrder(Player p) {
         int i = players.indexOf(p);
-        //index of starting player and players in front of that player are removed from the front and added to a seperate array
+        //index of starting player and players in front of that player are removed from the front and added to a separate array
         List<Player> toAdd = new ArrayList<>();
         for (int j = i - 1; j >= 0; j--) {
             Player temp = players.get(j);
@@ -419,7 +454,7 @@ public class Game {
             toAdd.add(temp);
 
         }
-        //resverse the order as they are added in the wrong way then the new array is added to the end of the players array
+        //reserve the order as they are added in the wrong way then the new array is added to the end of the players array
         Collections.reverse(toAdd);
 
         players.addAll(toAdd);
@@ -428,6 +463,9 @@ public class Game {
 
     /**
      * Checks to make sure the player has entered a correct move key
+     *
+     * @param in String to be checked
+     * @return string which is the players move
      */
     public String checkInput(String in) {
 
@@ -474,7 +512,7 @@ public class Game {
         players.add(new Player("Bert", 14, 22));
         players.add(new Player("Malina", 1, 11));
 
-        //4 player gets added in if nesscary
+        //4 player gets added in if necessary
         if (numPlayers.equals("4")) {
             players.add(new Player("Percy", 22, 9));
         }
