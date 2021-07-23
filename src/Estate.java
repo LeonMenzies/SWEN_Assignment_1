@@ -51,7 +51,6 @@ public class Estate {
 
         //Special method for picking the right location to redraw the players in the estate
         for (Cell pc : cellObjectsInEstate) {
-            System.out.println(pc);
             b.redrawCell(estateCellList.get(getCell).getRow(), estateCellList.get(getCell).getCol(), pc);
         }
     }

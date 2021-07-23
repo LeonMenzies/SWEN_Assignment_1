@@ -33,7 +33,7 @@ public class Player extends Move implements Cloneable {
         this.col = col;
         hand = new ArrayList<>();
         guesses = new ArrayList<>();
-        visited = new ArrayList<>();
+        this.visited = new ArrayList<>();
     }
 
     /**
@@ -97,7 +97,7 @@ public class Player extends Move implements Cloneable {
 
             //Add the current cell to a visited arraylist for checking later
             visited.add(b.getCell(row, col));
-            System.out.println(visited);
+
             switch (direction) {
                 case "W":
                     cells[row - 1][col] = playerCell;
@@ -128,30 +128,45 @@ public class Player extends Move implements Cloneable {
             }
 
             b.redrawEstates();
-        }else if (isValidEstate(b, direction)) {
-
+        }else if (this.getEstateIn() != null) {
+            isValidEstate(b,direction);
 
         } else {
-            System.out.println("Move is not valid");
+
         }
     }
 
-    public boolean isValidEstate(Board b, String direction){
+    /**
+     * Checks which direction the player wants to move and if the estate contains a door and if the the cell hasn't not already been visited this turn
+     * If direction is correct and cell unvisited player is removed from the state and redrawn outside the door
+     *
+     * @param b         the current board
+     * @param direction the direction the player wants to move
+     *
+     */
+
+    public void isValidEstate(Board b, String direction){
         Cell[][] c = b.getCells();
         //Check for a valid exit
-        Cell newPos = estateIn.containsExit(direction);
-        if (newPos != null) {
-            //Move the player to an exit point and remove them from the estate
-            estateIn.removePlayersInEstate(this);
-            c[newPos.getRow()][newPos.getCol()] = new PlayerCell(newPos.getRow(), newPos.getCol(), this.name);
-            b.redrawEstates();
-            this.row = newPos.getRow();
-            this.col = newPos.getCol();
-            steps--;
-            estateIn = null;
-            return true;
-        }
-        return false;
+
+            Cell newPos = estateIn.containsExit(direction);
+            if(newPos != null) {
+                //Move the player to an exit point and remove them from the estate
+                if (checkVisited(c[newPos.getRow()][newPos.getCol()])) {
+                    estateIn.removePlayersInEstate(this);
+                    c[newPos.getRow()][newPos.getCol()] = new PlayerCell(newPos.getRow(), newPos.getCol(), this.name);
+                    b.redrawEstates();
+                    this.row = newPos.getRow();
+                    this.col = newPos.getCol();
+                    steps--;
+                    estateIn = null;
+                }else{
+                    System.out.println("Move is not valid");
+                }
+
+        }else{
+                System.out.println("Move is not valid");
+            }
     }
 
     /**
