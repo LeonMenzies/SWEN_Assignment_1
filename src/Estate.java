@@ -43,16 +43,15 @@ public class Estate {
      * @param b the board to redraw on
      */
     public void redrawEstate(Board b) {
-        int getCell = availableCells.get(playersInEstate.size() + weaponsInEstate.size());
 
         for (Cell c : estateCellList) {
             b.redrawCell(c.getRow(), c.getCol(), c);
         }
 
         //Special method for picking the right location to redraw the players in the estate
-        for (Cell pc : cellObjectsInEstate) {
-            System.out.println(pc);
-            b.redrawCell(estateCellList.get(getCell).getRow(), estateCellList.get(getCell).getCol(), pc);
+        for(int i = 0; i < playersInEstate.size() + weaponsInEstate.size(); i++){
+            System.out.println(i);
+            b.redrawCell(estateCellList.get(availableCells.get(i)).getRow(), estateCellList.get(availableCells.get(i)).getCol(), cellObjectsInEstate.get(i));
         }
     }
 

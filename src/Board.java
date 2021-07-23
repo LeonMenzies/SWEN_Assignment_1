@@ -44,11 +44,11 @@ public class Board {
     public Board(int width, int height){
         cells = new Cell[width][height];
         //Add all the estates to this board with lists of indexes to free storage cells
-        estates.put("Haunted Door", new Estate("Haunted House", new ArrayList<>(Arrays.asList(5, 6, 7, 10, 11, 12, 15, 16, 17))));
-        estates.put("Manic Door", new Estate("Manic Manor", new ArrayList<>(Arrays.asList(5, 6, 7, 10, 11, 12, 15, 16, 17))));
-        estates.put("Peril Door", new Estate("Peril Palace", new ArrayList<>(Arrays.asList(5, 6, 7, 10, 11, 12, 15, 16, 17))));
-        estates.put("Calamity Door", new Estate("Calamity Castle", new ArrayList<>(Arrays.asList(5, 6, 7, 10, 11, 12, 15, 16, 17))));
-        estates.put("Villa Door", new Estate("Villa Celia", new ArrayList<>(Arrays.asList(6, 7, 8, 9, 12, 13, 14, 15, 16))));
+        estates.put("Haunted Door", new Estate("Haunted House", new ArrayList<>(Arrays.asList(6, 7, 8, 11, 12, 13, 16, 17, 18))));
+        estates.put("Manic Door", new Estate("Manic Manor", new ArrayList<>(Arrays.asList(6, 7, 8, 11, 12, 13, 16, 17, 18))));
+        estates.put("Peril Door", new Estate("Peril Palace", new ArrayList<>(Arrays.asList(6, 7, 8, 11, 12, 13, 16, 17, 18))));
+        estates.put("Calamity Door", new Estate("Calamity Castle", new ArrayList<>(Arrays.asList(6, 7, 8, 11, 12, 13, 16, 17, 18))));
+        estates.put("Villa Door", new Estate("Villa Celia", new ArrayList<>(Arrays.asList(7, 8, 9, 10, 13, 14, 15, 16, 17))));
     }
 
     /**
