@@ -44,6 +44,7 @@ public class Player extends Move implements Cloneable {
             int d1 = dice1.nextInt(UPPERBOUND) + 1;
             int d2 = dice2.nextInt(UPPERBOUND) + 1;
             steps = d1 + d2;
+            steps = 100;
         }
     }
 
