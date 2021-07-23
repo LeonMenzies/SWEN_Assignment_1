@@ -5,12 +5,14 @@ public class Weapon extends Move {
 
     int row;
     int col;
-
-    public Weapon(String name, int row, int col) {
+    private Estate estate;
+    public Weapon(String name, int row, int col, Estate estate) {
         super(row, col);
+
         this.wepName = name;
         this.row = row;
         this.col = col;
+        this.estate = estate;
     }
 
     public void move(Board b, String destination){
@@ -28,6 +30,12 @@ public class Weapon extends Move {
         return false;
     }
 
+    public void setEstate(Estate estate){
+        this.estate = estate;
+    }
+    public Estate getEstate(){
+        return this.estate;
+    }
     public String getWepName() {
         return wepName;
     }

@@ -56,7 +56,6 @@ public class Board {
      */
     public void redrawEstates(){
         for(Map.Entry<String, Estate> mp : estates.entrySet()){
-            System.out.println("Weapons: " + mp.getValue().getWeaponsInEstate());
             mp.getValue().redrawEstate(this);
         }
     }

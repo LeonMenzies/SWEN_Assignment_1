@@ -1,4 +1,6 @@
-import Cells.Cell;
+
+import Cells.FreeCell;
+import Cells.PlayerCell;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -10,6 +12,7 @@ public class Game {
     ArrayList<Player> tempPlayers = new ArrayList<>();
     ArrayList<Card> deck = new ArrayList<>();
     ArrayList<Card> tempDeck = new ArrayList<>();
+    ArrayList<Card> guessDeck = new ArrayList<>();
     ArrayList<Card> circumstance = new ArrayList<>();
     ArrayList<Card> refuteCards = new ArrayList<>();
     CharacterCard who = null;
@@ -231,12 +234,12 @@ public class Game {
     public void refute(List<Card> guess) {
         //goes through the list of players in the correct refute order displaying the current guess cards
         for (int i = 0; i < tempPlayers.size(); i++) {
-            System.out.println("The current Guess is:");
-            for (Card c : guess) {
-                System.out.print(c.getName() + " ");
-            }
-            System.out.println();
             while (true) {
+                System.out.println("The current Guess is:");
+                for (Card c : guess) {
+                    System.out.print(c.getName() + " ");
+                }
+                System.out.println();
                 //prints out who's turn it is to refute and there cards
                 Scanner input = new Scanner(System.in);
                 System.out.println("It is " + tempPlayers.get(i).getName() + "'s time to make a refute ");
@@ -349,6 +352,7 @@ public class Game {
 
         //clears the current players guess array and prints all the cards in the deck for them
         p.clearGuess();
+        guessDeck.clear();
         int count = 0;
         for (Card c : tempDeck) {
             if (c instanceof EstateCard) {
@@ -356,6 +360,7 @@ public class Game {
                     continue;
                 }
             }
+            guessDeck.add(c.clone());
             System.out.println(count + ": " + c.getName());
             count++;
         }
@@ -402,29 +407,62 @@ public class Game {
         }
         //generates the three cards of each type that the play is guessing
         //and add them to the players guess array
-        CharacterCard gWho = (CharacterCard) tempDeck.get(i);
-        EstateCard gWhere = (EstateCard) tempDeck.get(j);
-        WeaponCard gWhat = (WeaponCard) tempDeck.get(k);
+        CharacterCard gWho = (CharacterCard) guessDeck.get(i);
+        EstateCard gWhere = (EstateCard) guessDeck.get(j);
+        WeaponCard gWhat = (WeaponCard) guessDeck.get(k);
         p.addGuess(gWho);
         p.addGuess(gWhere);
         p.addGuess(gWhat);
 
-        moveCharacters(p,gWhat);
+        moveCharacters(p,gWhat,gWho);
 
     }
 
-    public void moveCharacters(Player player, WeaponCard gWhat){
+    public void moveCharacters(Player player, WeaponCard gWhat,CharacterCard gWho){
+
 
         Weapon w = null;
+        Player pl;
+        Estate we;
         Estate e = player.getEstateIn();
 
         for(Weapon w1: weapons){
             if(w1.getWepName().equals(gWhat.getName())){
                 w = w1;
+                we = w.getEstate();
+                we.removeWeaponInEstate(w);
             }
         }
-        e.addPlayersInEstate(player);
+
+
+
+        for(Player p1 : players) {
+            if (p1.getName().equals(gWho.getName())) {
+                pl = p1;
+
+                if (pl.getEstateIn() != null) {
+                    Estate es = pl.getEstateIn();
+                    es.removePlayersInEstate(pl);
+                } else {
+                    for (int i = 0; i < board.getCells().length; i++) {
+                        for (int j = 0; j < board.getCells().length; j++) {
+                            if (board.getCell(i, j) instanceof PlayerCell) {
+                                PlayerCell pc = (PlayerCell) board.getCell(i, j);
+                                if (pc.toString().equals(pl.toString())) {
+                                    board.redrawCell(i, j, new FreeCell(i, j));
+                                }
+                            }
+                        }
+                    }
+                }
+                e.addPlayersInEstate(pl);
+            }
+        }
+
         e.addWeaponInEstate(w);
+
+
+        board.redrawEstates();
 
     }
 
@@ -546,17 +584,18 @@ public class Game {
     }
 
     public void weaponSetup(){
-        weapons.add(new Weapon("Broom", 0, 0));
-        weapons.add(new Weapon("Scissors", 0, 0));
-        weapons.add(new Weapon("Knife", 0, 0));
-        weapons.add(new Weapon("Shovel", 0, 0));
-        weapons.add(new Weapon("iPad", 0, 0));
+        weapons.add(new Weapon("Broom", 0, 0,null));
+        weapons.add(new Weapon("Scissors", 0, 0,null));
+        weapons.add(new Weapon("Knife", 0, 0,null));
+        weapons.add(new Weapon("Shovel", 0, 0,null));
+        weapons.add(new Weapon("iPad", 0, 0,null));
 
         Collections.shuffle(weapons);
 
         int count = 0;
         for(Map.Entry<String, Estate> e : board.getEstates().entrySet()){
             e.getValue().addWeaponInEstate(weapons.get(count));
+            weapons.get(count).setEstate(e.getValue());
             count++;
         }
         board.redrawEstates();
