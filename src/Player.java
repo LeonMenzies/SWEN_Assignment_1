@@ -1,4 +1,5 @@
 import Cells.*;
+
 import java.util.*;
 import java.util.Random;
 
@@ -87,7 +88,7 @@ public class Player extends Move implements Cloneable {
      */
     public void move(Board b, String direction) {
         if (isValid(b, direction)) {
-            steps--;
+
 
             Cell[][] cells = b.getCells();
             Cell playerCell = cells[row][col];
@@ -95,7 +96,7 @@ public class Player extends Move implements Cloneable {
 
             //Add the current cell to a visited arraylist for checking later
             visited.add(b.getCell(row, col));
-
+            System.out.println(visited);
             switch (direction) {
                 case "W":
                     cells[row - 1][col] = playerCell;
@@ -124,10 +125,32 @@ public class Player extends Move implements Cloneable {
                 default:
                     break;
             }
+
             b.redrawEstates();
+        }else if (isValidEstate(b, direction)) {
+
+
         } else {
             System.out.println("Move is not valid");
         }
+    }
+
+    public boolean isValidEstate(Board b, String direction){
+        Cell[][] c = b.getCells();
+        //Check for a valid exit
+        Cell newPos = estateIn.containsExit(direction);
+        if (newPos != null) {
+            //Move the player to an exit point and remove them from the estate
+            estateIn.removePlayersInEstate(this);
+            c[newPos.getRow()][newPos.getCol()] = new PlayerCell(newPos.getRow(), newPos.getCol(), this.name);
+            b.redrawEstates();
+            this.row = newPos.getRow();
+            this.col = newPos.getCol();
+            steps--;
+            estateIn = null;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -165,19 +188,7 @@ public class Player extends Move implements Cloneable {
 
         //Check if player is currently in an estate and trying to leaving in a given direction
         if (estateIn != null) {
-            //Check for a valid exit
-            Cell newPos = estateIn.containsExit(direction);
-            if (newPos != null) {
-                //Move the player to an exit point and remove them from the estate
-                estateIn.removePlayersInEstate(this);
-                c[newPos.getRow()][newPos.getCol()] = new PlayerCell(newPos.getRow(), newPos.getCol(), this.name);
-                b.redrawEstates();
-                this.row = newPos.getRow();
-                this.col = newPos.getCol();
-                steps--;
-                estateIn = null;
-                return false;
-            }
+            return false;
         }
 
         //Make sure the move doesnt go out of bounds or is not a visited cell
@@ -188,6 +199,7 @@ public class Player extends Move implements Cloneable {
 
         if (c[tempRow][tempCol] != null) {
             if (c[tempRow][tempCol] instanceof FreeCell) {
+                steps--;
                 return true;
             }
             //If the player is trying to enter an estate make sure its entering a door cell and add it to that estate
@@ -196,6 +208,7 @@ public class Player extends Move implements Cloneable {
                 if (ec.isDoor()) {
                     estateIn = b.getEstate(ec.getName());
                     estateIn.addPlayersInEstate(this, (PlayerCell) c[row][col]);
+                    steps--;
                     return true;
                 }
             }
@@ -259,7 +272,9 @@ public class Player extends Move implements Cloneable {
     /**
      * Clear visited cells for when a player has finished there turn
      */
-    public void clearVisited() { visited.clear(); }
+    public void clearVisited() {
+        visited.clear();
+    }
 
     /*
      * Getter and setters for this player object
@@ -324,8 +339,12 @@ public class Player extends Move implements Cloneable {
         hasGuessed = b;
     }
 
-    public String getEstateIn(){
-        if(estateIn == null){
+    public Estate getEstateIn(){
+        return this.estateIn;
+    }
+
+    public String getEstateInString() {
+        if (estateIn == null) {
             return "null";
         }
         return estateIn.getEstateName();

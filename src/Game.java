@@ -148,7 +148,7 @@ public class Game {
             //set so player cant make another guess this turn, gets the order the following players will make a guess
             //adds the cards to the refute list, clears the screen then displays the refute cards for the player
             //also checks to see if the play is in an estate
-            if (in.equals("G") && !p.getGuessStatus() && !p.getEstateIn().equals("null")) {
+            if (in.equals("G") && !p.getGuessStatus() && !p.getEstateInString().equals("null")) {
                 p.setGuessStatus(true);
                 refuteOrder(p);
                 makeGuess(p);
@@ -163,17 +163,17 @@ public class Game {
                     System.out.println(i + ": " + refuteCards.get(i).getName());
                 }
 
-            } else if (in.equals("G") && p.getGuessStatus() && !p.getEstateIn().equals("null")) {
+            } else if (in.equals("G") && p.getGuessStatus() && !p.getEstateInString().equals("null")) {
                 System.out.println("You have already guessed");
 
-            } else if(in.equals("G") && !p.getGuessStatus() && p.getEstateIn().equals("null") ) {
+            } else if(in.equals("G") && !p.getGuessStatus() && p.getEstateInString().equals("null") ) {
                 System.out.println("You need to be in an estate to make a guess");
             }
 
             //player makes a guess then the cards a checked against the circumstance
             //if player is successful they have won otherwise they are out
             //also checks to see if the player is in a estate
-            if (in.equals("F") && !p.getGuessStatus() && !p.getEstateIn().equals("null")) {
+            if (in.equals("F") && !p.getGuessStatus() && !p.getEstateInString().equals("null")) {
                 makeGuess(p);
                 p.setHasWon(checkWin(p.getGuess()));
                 if (p.getHasWon()) {
@@ -184,16 +184,16 @@ public class Game {
                     System.out.println("You are out " + p.getName() + " you can't guess or move but can still refute");
                 }
                 return false;
-            } else if(in.equals("F") && !p.getGuessStatus() && p.getEstateIn().equals("null")){
+            } else if(in.equals("F") && !p.getGuessStatus() && p.getEstateInString().equals("null")){
                 System.out.println("You must be in an estate to make a final guess");
             }
 
             //ends the plays turn
-            if (in.equals("E") && (p.getSteps() == 0 || !p.getEstateIn().equals("null"))) {
+            if (in.equals("E") && (p.getSteps() == 0 || !p.getEstateInString().equals("null"))) {
                 p.setTurn(false);
                 clearScreen();
                 return false;
-            } else {
+            } else if(in.equals("E") && (p.getSteps() != 0 || p.getEstateInString().equals("null"))) {
                 System.out.println("You must be in an estate or out of steps to end your turn");
             }
         }
@@ -350,7 +350,7 @@ public class Game {
         int count = 0;
         for (Card c : tempDeck) {
             if (c instanceof EstateCard) {
-                if (!c.getName().equals(p.getEstateIn())) {
+                if (!c.getName().equals(p.getEstateInString())) {
                     continue;
                 }
             }
@@ -407,8 +407,24 @@ public class Game {
         p.addGuess(gWhere);
         p.addGuess(gWhat);
 
+        moveCharacters(p,gWhat);
+
     }
 
+    public void moveCharacters(Player player, WeaponCard gWhat){
+
+        Weapon w = null;
+        Estate e = player.getEstateIn();
+
+        for(Weapon w1: weapons){
+            if(w1.getWepName().equals(gWhat.getName())){
+                w = w1;
+            }
+        }
+        e.addPlayersInEstate(player);
+        e.addWeaponInEstate(w);
+
+    }
 
     /**
      * Make sure the order to refute is correct depending on who is making the guess
@@ -639,7 +655,8 @@ public class Game {
      */
     public static void clearScreen() {
 
-        for (int i = 0; i < 150; ++i) System.out.println();
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
 
     }
 

@@ -78,6 +78,12 @@ public class Estate {
         this.playersInEstate.add(pl);
     }
 
+    public void addPlayersInEstate(Player pl) {
+
+        this.cellObjectsInEstate.add(new PlayerCell(0,0,pl.getName()));
+        this.playersInEstate.add(pl);
+    }
+
     public void addWeaponInEstate(Weapon wp){
         this.weaponsInEstate.add(wp);
         this.cellObjectsInEstate.add(new WeaponCell(0, 0, wp.getWepName()));
