@@ -51,7 +51,7 @@ public class Estate {
 
         //Special method for picking the right location to redraw the players in the estate
         for(int i = 0; i < playersInEstate.size() + weaponsInEstate.size(); i++){
-            System.out.println(i);
+
             b.redrawCell(estateCellList.get(availableCells.get(i)).getRow(), estateCellList.get(availableCells.get(i)).getCol(), cellObjectsInEstate.get(i));
         }
     }
