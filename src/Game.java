@@ -193,7 +193,7 @@ public class Game {
                 System.out.println("You must be in an estate to make a final guess");
             }
 
-            //ends the plays turn
+            //ends the players turn
             if (in.equals("E") && (p.getSteps() == 0 || !p.getEstateInString().equals("null"))) {
                 p.clearSteps();
                 p.setTurn(false);
