@@ -44,7 +44,7 @@ public class Player extends Move implements Cloneable {
             int d1 = dice1.nextInt(UPPERBOUND) + 1;
             int d2 = dice2.nextInt(UPPERBOUND) + 1;
             steps = d1 + d2;
-            steps = 100;
+
         }
     }
 
@@ -132,7 +132,7 @@ public class Player extends Move implements Cloneable {
             isValidEstate(b,direction);
 
         } else {
-
+            System.out.println("Move is not valid");
         }
     }
 
@@ -240,10 +240,7 @@ public class Player extends Move implements Cloneable {
      * @return true or false boolean to signify weather the move is out of bounds
      */
     private boolean outOfBounds(int tempRow, int tempCol) {
-        if (tempCol > 23 || tempRow > 23 || tempCol < 0 || tempRow < 0) {
-            return true;
-        }
-        return false;
+        return tempCol > 23 || tempRow > 23 || tempCol < 0 || tempRow < 0;
     }
 
 
@@ -254,10 +251,7 @@ public class Player extends Move implements Cloneable {
      * @return true or false if the player has visited the given cell
      */
     public boolean checkVisited(Cell c) {
-        if (visited.contains(c)) {
-            return false;
-        }
-        return true;
+        return !visited.contains(c);
     }
 
     /**
@@ -267,6 +261,13 @@ public class Player extends Move implements Cloneable {
      */
     public void addGuess(Card c) {
         this.guesses.add(c);
+    }
+
+    /**
+     * Clear the steps for this player
+     */
+    public void clearSteps(){
+        this.steps = 0;
     }
 
     /**
@@ -295,6 +296,9 @@ public class Player extends Move implements Cloneable {
     /*
      * Getter and setters for this player object
      */
+
+
+
     public int getRow() {
         return row;
     }
@@ -369,7 +373,7 @@ public class Player extends Move implements Cloneable {
     /**
      * toString method for getting the player initial two letters of there name
      *
-     * @return
+     * @return first two letters of this players name
      */
     @Override
     public String toString() {

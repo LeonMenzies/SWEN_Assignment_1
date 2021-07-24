@@ -195,6 +195,7 @@ public class Game {
 
             //ends the plays turn
             if (in.equals("E") && (p.getSteps() == 0 || !p.getEstateInString().equals("null"))) {
+                p.clearSteps();
                 p.setTurn(false);
                 clearScreen();
                 return false;
@@ -249,7 +250,6 @@ public class Game {
                 //method checks to see if they have entered a number
                 if (isNumeric(in)) {
                     int j = Integer.parseInt(in.substring(0, 1));
-                    System.out.println(j);
                     if (j > tempPlayers.get(i).getHand().size() - 1 && j != 4) {
                         System.out.println("Please enter a valid number");
 
@@ -418,31 +418,48 @@ public class Game {
 
     }
 
+    /**
+     * Move the the weapon and player the on the board into the estate that the player is making the guess in
+     *
+     * @param player player making the guess
+     * @param gWhat current weapon card guess
+     * @param gWho current player card guess
+     */
+
     public void moveCharacters(Player player, WeaponCard gWhat,CharacterCard gWho){
 
 
-        Weapon w = null;
         Player pl;
         Estate we;
         Estate e = player.getEstateIn();
 
+        //Goes through the list of weapons finds the one that match's that of the guess removes it from its current estate into the new one
         for(Weapon w1: weapons){
             if(w1.getWepName().equals(gWhat.getName())){
-                w = w1;
-                we = w.getEstate();
-                we.removeWeaponInEstate(w);
+
+                we = w1.getEstate();
+                if(!we.getEstateName().equals(e.getEstateName())) {
+                    we.removeWeaponInEstate(w1);
+                    e.addWeaponInEstate(w1);
+                }
             }
         }
 
 
-
+        //goes through the list of players finding the one that match's the guess if they are already in an estate removes from that estate and into the new one
+        //if they are somewhere on the board goes through the board and replaces them with a free cell
         for(Player p1 : players) {
             if (p1.getName().equals(gWho.getName())) {
                 pl = p1;
 
                 if (pl.getEstateIn() != null) {
+
                     Estate es = pl.getEstateIn();
-                    es.removePlayersInEstate(pl);
+                    if(!es.getEstateName().equals(e.getEstateName())){
+                        es.removePlayersInEstate(pl);
+                        e.addPlayersInEstate(pl);
+                    }
+
                 } else {
                     for (int i = 0; i < board.getCells().length; i++) {
                         for (int j = 0; j < board.getCells().length; j++) {
@@ -454,13 +471,11 @@ public class Game {
                             }
                         }
                     }
+                    e.addPlayersInEstate(pl);
                 }
-                e.addPlayersInEstate(pl);
+
             }
         }
-
-        e.addWeaponInEstate(w);
-
 
         board.redrawEstates();
 
@@ -487,13 +502,15 @@ public class Game {
         //moves the ones in front of the guesser to the back of the array then removes them from the front
         int i = tempPlayers.indexOf(guesser);
 
+        List<Player> toAdd = new ArrayList<>();
         for (int j = i - 1; j >= 0; j--) {
-            Player temp = players.get(j);
-            players.remove(j);
-            players.add(temp);
+            Player temp = tempPlayers.get(j);
+            tempPlayers.remove(j);
+            toAdd.add(temp);
 
         }
-
+        Collections.reverse(toAdd);
+        tempPlayers.addAll(toAdd);
         //finally removes the guesser from the order
         tempPlayers.remove(guesser);
 
@@ -582,6 +599,10 @@ public class Game {
         }
 
     }
+
+    /**
+     * Generates the Weapons then randomly distributes them through out the estates
+     */
 
     public void weaponSetup(){
         weapons.add(new Weapon("Broom", 0, 0,null));

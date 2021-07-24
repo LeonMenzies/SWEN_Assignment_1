@@ -9,9 +9,7 @@ public class WeaponCell extends Cells.Cell{
         this.weaponName = weaponName;
     }
 
-    public String getName(){
-        return this.weaponName;
-    }
+
 
     @Override
     public String toString() {

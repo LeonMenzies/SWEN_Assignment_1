@@ -78,11 +78,23 @@ public class Estate {
         this.playersInEstate.add(pl);
     }
 
+    /**
+     * Add a player object to this estate
+     *
+     * @param pl the player object to be added
+     *
+     */
     public void addPlayersInEstate(Player pl) {
 
         this.cellObjectsInEstate.add(new PlayerCell(0,0,pl.getName()));
         this.playersInEstate.add(pl);
     }
+    /**
+     * Add a weapon object to this estate
+     *
+     * @param wp the player object to be added
+     *
+     */
 
     public void addWeaponInEstate(Weapon wp){
         this.weaponsInEstate.add(wp);
@@ -125,15 +137,31 @@ public class Estate {
         }
     }
 
+    /**
+     * Remove a weapon from this estate object
+     *
+     * @param aWeapon player to be removed
+     */
+    public void removeWeaponInEstate(Weapon aWeapon){
+        this.weaponsInEstate.remove(aWeapon);
+        Cell toRemove = null;
+
+        //Find the player in the list of estate cells and remove it
+        for (Cell c : cellObjectsInEstate) {
+            if (c.toString().equals(aWeapon.toString())) {
+                toRemove = c;
+            }
+        }
+        if (toRemove != null) {
+
+            this.cellObjectsInEstate.remove(toRemove);
+        }
+    }
+
     public String getEstateName(){
         return estateName;
     }
 
-    public List<Weapon> getWeaponsInEstate(){
-        return this.weaponsInEstate;
-    }
 
-    public void removeWeaponInEstate(Weapon aWeapon){
-        this.weaponsInEstate.remove(aWeapon);
-    }
+
 }
