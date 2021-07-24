@@ -43,6 +43,7 @@ public class Player extends Move implements Cloneable {
         if (turn) {
             int d1 = dice1.nextInt(UPPERBOUND) + 1;
             int d2 = dice2.nextInt(UPPERBOUND) + 1;
+            System.out.println("You rolled a " +d1 + " and a "+ d2);
             steps = d1 + d2;
 
         }
