@@ -1,5 +1,8 @@
 package Cells;
 
+/***
+ * The weapons cell class represents the weapons cells where the weapons are stored
+ */
 public class WeaponCell extends Cells.Cell{
     String weaponName;
 

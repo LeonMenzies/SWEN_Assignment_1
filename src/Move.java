@@ -1,3 +1,6 @@
+/*
+ * The Move class is an abstract class used by the Player class to be able to see whether or not a move isValid or not
+ */
 public abstract class Move {
 
     int row, col;
